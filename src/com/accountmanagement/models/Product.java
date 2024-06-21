@@ -13,8 +13,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String serial, String buyerName, String buyerPhone, String buyerEmail, String password, String subscribtionDate, double subscribtionValue) {
-        this.id = id;
+    public Product(String serial, String buyerName, String buyerPhone, String buyerEmail, String password, String subscribtionDate, double subscribtionValue) {
         this.serial = serial;
         this.buyerName = buyerName;
         this.buyerPhone = buyerPhone;

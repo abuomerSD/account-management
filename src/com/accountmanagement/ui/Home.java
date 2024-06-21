@@ -1,6 +1,7 @@
 package com.accountmanagement.ui;
 
 import com.accountmanagement.utils.JpanelLoader;
+import javax.swing.JOptionPane;
 
 public class Home extends javax.swing.JFrame {
 
@@ -8,6 +9,7 @@ public class Home extends javax.swing.JFrame {
     
     public Home() {
         initComponents();
+        
         
         // maximize the Home Frame
 //        this.setExtendedState(Home.MAXIMIZED_BOTH);
