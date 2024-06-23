@@ -23,7 +23,7 @@ public class DatabaseTablesCreator {
         
         String sql = "CREATE TABLE IF NOT EXISTS tb_products (\n" +
                             "	Id  INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                            "	Serial VARCHAR(255),\n" +
+                            "	Serial VARCHAR(255) UNIQUE,\n" +
                             "	Buyer_Name VARCHAR(100),\n" +
                             "	Buyer_Phone VARCHAR(50),\n" +
                             "	Buyer_Email VARCHAR(100),\n" +

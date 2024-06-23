@@ -8,23 +8,16 @@ package com.accountmanagement.ui;
 import com.accountmanagement.models.Product;
 import com.accountmanagement.repositories.product.ProductSqliteRepository;
 import java.awt.ComponentOrientation;
-import java.awt.print.PrinterException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -33,7 +26,7 @@ import sun.swing.table.DefaultTableCellHeaderRenderer;
 public class products extends javax.swing.JPanel {
 
     
-    private ProductSqliteRepository repo = new ProductSqliteRepository();
+    private final ProductSqliteRepository repo = new ProductSqliteRepository();
     
     
     public products() {
