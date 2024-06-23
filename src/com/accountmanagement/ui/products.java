@@ -16,12 +16,15 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -29,22 +32,55 @@ import javax.swing.table.DefaultTableModel;
  */
 public class products extends javax.swing.JPanel {
 
-    /**
-     * Creates new form products
-     * @param repo
-     */
+    
+    private ProductSqliteRepository repo = new ProductSqliteRepository();
+    
+    
     public products() {
+          
         initComponents();
 //        jPanel1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+
+        // set RTL to tables and tabbedPane
+        
         jTabbedPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         addProuctTable.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        tbSearchProduct.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         
-        // set products table header RTL
-        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) addProuctTable.getTableHeader().getDefaultRenderer();
-        renderer.setHorizontalAlignment(0);
+        // set Products Search Table columns Width
+        tbSearchProduct.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tbSearchProduct.getColumnModel().getColumn(1).setMinWidth(150);
+        tbSearchProduct.getColumnModel().getColumn(2).setMinWidth(100);
+        tbSearchProduct.getColumnModel().getColumn(3).setMinWidth(100);
+        tbSearchProduct.getColumnModel().getColumn(4).setMinWidth(150);
+        tbSearchProduct.getColumnModel().getColumn(5).setMinWidth(100);
+        tbSearchProduct.getColumnModel().getColumn(6).setMinWidth(100);
+        tbSearchProduct.getColumnModel().getColumn(7).setMinWidth(100);
+
+        
+        // set products table header RTL and center
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) addProuctTable.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer headerRenderer1 = (DefaultTableCellRenderer) tbSearchProduct.getTableHeader().getDefaultRenderer();
+        headerRenderer1.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer centerStringRenderer = (DefaultTableCellRenderer) tbSearchProduct.getDefaultRenderer(String.class);
+        centerStringRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tbSearchProduct.setDefaultRenderer(String.class, centerStringRenderer);
+        
+        DefaultTableCellRenderer centerIntRenderer = (DefaultTableCellRenderer) tbSearchProduct.getDefaultRenderer(Integer.class);
+        centerIntRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tbSearchProduct.setDefaultRenderer(Integer.class, centerIntRenderer);
+        
+        DefaultTableCellRenderer centerDoubleRenderer = (DefaultTableCellRenderer) tbSearchProduct.getDefaultRenderer(Double.class);
+        centerDoubleRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tbSearchProduct.setDefaultRenderer(Double.class, centerDoubleRenderer);
+        
         
         // set tables data
         setAddProductsTableData();
+        setSearchProductTableData();
         
         // add table changed selection listener
         
@@ -64,7 +100,7 @@ public class products extends javax.swing.JPanel {
             String serial = txtAddProductSearchSerial.getText();
             String buyerName = txtAddProductSearchBuyerName.getText();
             
-            ProductSqliteRepository repo = new ProductSqliteRepository();
+//            ProductSqliteRepository repo = new ProductSqliteRepository();
             
             ArrayList<Product> list = repo.findBySerialOrBuyerName(serial, buyerName);
             
@@ -90,13 +126,43 @@ public class products extends javax.swing.JPanel {
         
     }
     
+    
+    private void filterTbSearchProductBySearchWords() {
+        try {
+            String serial = txtSearchProduct.getText();
+            String buyerName = txtSearchProductBuyerName.getText();
+            ArrayList<Product> list = repo.findBySerialOrBuyerName(serial, buyerName);
+            
+            DefaultTableModel model = (DefaultTableModel) tbSearchProduct.getModel();
+            model.setRowCount(0);
+            
+            for(Product product : list) {
+                Vector vector = new Vector();
+                vector.add(product.getId());
+                vector.add(product.getSerial());
+                vector.add(product.getBuyerName());
+                vector.add(product.getBuyerPhone());
+                vector.add(product.getBuyerEmail());
+                vector.add(product.getPassword());
+                vector.add(product.getSubscribtionDate());
+                vector.add(product.getSubscribtionValue());
+                model.addRow(vector);
+            }
+            
+            tbSearchProduct.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+    
     public void setAddProductsTableData() {
         
         DefaultTableModel model = (DefaultTableModel) addProuctTable.getModel();
         model.setRowCount(0);
         
         try {
-            ProductSqliteRepository repo = new ProductSqliteRepository();
+//            ProductSqliteRepository repo = new ProductSqliteRepository();
             ArrayList<Product> list = repo.findAll();
             
             for(Product product : list) {
@@ -117,6 +183,37 @@ public class products extends javax.swing.JPanel {
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    private void setSearchProductTableData() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbSearchProduct.getModel();
+            model.setRowCount(0);
+            
+            ArrayList<Product> list = repo.findAll();
+            
+            for(Product product : list) {
+                Vector vector = new Vector();
+                vector.add(product.getId());
+                vector.add(product.getSerial());
+                vector.add(product.getBuyerName());
+                vector.add(product.getBuyerPhone());
+                vector.add(product.getBuyerEmail());
+                vector.add(product.getPassword());
+                vector.add(product.getSubscribtionDate());
+                vector.add(product.getSubscribtionValue());
+                
+                model.addRow(vector);
+                
+            }
+            
+            tbSearchProduct.setModel(model);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
         }
     }
     
@@ -202,6 +299,14 @@ public class products extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         lbStatus = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbSearchProduct = new javax.swing.JTable();
+        jPanel8 = new javax.swing.JPanel();
+        txtSearchProduct = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtSearchProductBuyerName = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
 
         jTabbedPane1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 
@@ -607,15 +712,138 @@ public class products extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("إضافة منتجات", jPanel1);
 
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        tbSearchProduct.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        tbSearchProduct.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "الرقم", "السيريال", "اسم المشتري", "رقم التلفون", "الايميل", "كلمة السر", "تاريخ الاشتراك", "قيمة الاشتراك"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tbSearchProduct.setRowHeight(30);
+        tbSearchProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbSearchProductMouseClicked(evt);
+            }
+        });
+        tbSearchProduct.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbSearchProductKeyReleased(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tbSearchProduct);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        txtSearchProduct.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchProduct.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSearchProduct.setToolTipText("");
+        txtSearchProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchProductActionPerformed(evt);
+            }
+        });
+        txtSearchProduct.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchProductKeyReleased(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel13.setText("السيريال :");
+
+        txtSearchProductBuyerName.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchProductBuyerName.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSearchProductBuyerName.setToolTipText("");
+        txtSearchProductBuyerName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchProductBuyerNameActionPerformed(evt);
+            }
+        });
+        txtSearchProductBuyerName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchProductBuyerNameKeyReleased(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel14.setText("اسم المشتري :");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(359, Short.MAX_VALUE)
+                .addComponent(txtSearchProductBuyerName, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearchProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel13)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtSearchProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel14)
+                        .addComponent(txtSearchProductBuyerName, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 954, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 607, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("قائمة المنتجات", jPanel2);
@@ -630,7 +858,7 @@ public class products extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 65, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -684,12 +912,13 @@ public class products extends javax.swing.JPanel {
             Product product = new Product(serial, buyerName, buyerPhone, buyerEmail, password, date, subscribtionValue);
             
             
-            ProductSqliteRepository repo = new ProductSqliteRepository();
+//            ProductSqliteRepository repo = new ProductSqliteRepository();
             
             
             
             if(repo.save(product)) {
                 setAddProductsTableData();
+                setSearchProductTableData();
                 lbStatus.setText("تم إضافة " + product.getSerial() + " بنجاح");
                 clearAddProductTextFields();
             }
@@ -723,13 +952,14 @@ public class products extends javax.swing.JPanel {
             
             newProduct.setId(Integer.valueOf(txtProductId.getText()));
             
-            ProductSqliteRepository repo = new ProductSqliteRepository();
+//            ProductSqliteRepository repo = new ProductSqliteRepository();
             
             int result = JOptionPane.showConfirmDialog(null, "هل تريد تعديل المنتج رقم " + newProduct.getId() + "؟", "رسالة تأكيد", JOptionPane.YES_NO_OPTION);
             
             if(result == JOptionPane.YES_OPTION){
                 repo.update(newProduct);
                 setAddProductsTableData();
+                setSearchProductTableData();
                 lbStatus.setText("تم تحديث بيانات الصنف " + serial);
             }
 
@@ -744,7 +974,7 @@ public class products extends javax.swing.JPanel {
         
         try {
             int id = Integer.valueOf(txtProductId.getText());
-            ProductSqliteRepository repo = new ProductSqliteRepository();
+//            ProductSqliteRepository repo = new ProductSqliteRepository();
             
             int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف المنتج رقم " + id + "؟", "رسالة تأكيد", JOptionPane.YES_NO_OPTION);
             
@@ -753,6 +983,7 @@ public class products extends javax.swing.JPanel {
                 lbStatus.setText("تم حذف المنتج رقم " + id);
                 clearAddProductTextFields();
                 setAddProductsTableData();
+                setSearchProductTableData();
                 }
             }
 
@@ -794,6 +1025,30 @@ public class products extends javax.swing.JPanel {
         filterAddProductTableBySearchWords();
     }//GEN-LAST:event_txtAddProductSearchBuyerNameKeyReleased
 
+    private void tbSearchProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbSearchProductMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbSearchProductMouseClicked
+
+    private void tbSearchProductKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbSearchProductKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbSearchProductKeyReleased
+
+    private void txtSearchProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchProductActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchProductActionPerformed
+
+    private void txtSearchProductKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchProductKeyReleased
+        filterTbSearchProductBySearchWords();
+    }//GEN-LAST:event_txtSearchProductKeyReleased
+
+    private void txtSearchProductBuyerNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchProductBuyerNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchProductBuyerNameActionPerformed
+
+    private void txtSearchProductBuyerNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchProductBuyerNameKeyReleased
+        filterTbSearchProductBySearchWords();
+    }//GEN-LAST:event_txtSearchProductBuyerNameKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable addProuctTable;
@@ -805,6 +1060,8 @@ public class products extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -819,9 +1076,13 @@ public class products extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lbStatus;
+    private javax.swing.JTable tbSearchProduct;
     private javax.swing.JTextField txtAddPoductBuyer;
     private javax.swing.JTextField txtAddProductBuyerEmail;
     private javax.swing.JTextField txtAddProductBuyerPhone;
@@ -832,5 +1093,7 @@ public class products extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser txtAddProductSubscribtionDate;
     private javax.swing.JTextField txtAddProductSuscribtionValue;
     private javax.swing.JTextField txtProductId;
+    private javax.swing.JTextField txtSearchProduct;
+    private javax.swing.JTextField txtSearchProductBuyerName;
     // End of variables declaration//GEN-END:variables
 }
