@@ -19,6 +19,7 @@ public class DatabaseTablesCreator {
     public static void createDbTables() {
         createProductsTable();
         createCustomersTable();
+        createCurrencyTable();
     }
 
     private static void createProductsTable() {
@@ -56,6 +57,23 @@ public class DatabaseTablesCreator {
             st.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void createCurrencyTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS \"tb_currency\" (\n" +
+                            "	\"Id\"	INTEGER NOT NULL,\n" +
+                            "	\"Name\"	VARCHAR(50) UNIQUE,\n" +
+                            "	PRIMARY KEY(\"Id\" AUTOINCREMENT)\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
         }
     }
     

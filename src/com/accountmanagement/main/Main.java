@@ -2,8 +2,6 @@ package com.accountmanagement.main;
 
 import com.accountmanagement.database.DatabaseTablesCreator;
 import com.accountmanagement.database.DbConnection;
-import com.accountmanagement.models.Customer;
-import com.accountmanagement.models.CustomerBuilder;
 import com.accountmanagement.ui.Home;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -19,6 +17,7 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
+            
             
             
         } catch (Exception e) {
