@@ -7,6 +7,7 @@ package com.accountmanagement.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +18,7 @@ public class DatabaseTablesCreator {
     
     public static void createDbTables() {
         createProductsTable();
+        createCustomersTable();
     }
 
     private static void createProductsTable() {
@@ -38,6 +40,22 @@ public class DatabaseTablesCreator {
 //            System.out.println(sql);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private static void createCustomersTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS tb_customers (\n" +
+                            "	Id INTEGER   PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
+                            "	Name VARCHAR(50) NOT NULL UNIQUE,\n" +
+                            "	Phone VARCHAR(50) NOT NULL\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con .createStatement();
+            st.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

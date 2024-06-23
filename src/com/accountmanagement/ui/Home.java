@@ -62,6 +62,11 @@ public class Home extends javax.swing.JFrame {
         btnCustomers.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnCustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/customers.png"))); // NOI18N
         btnCustomers.setText("العملاء");
+        btnCustomers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCustomersActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -145,6 +150,12 @@ public class Home extends javax.swing.JFrame {
         
         panelLoader.jPanelLoader(jPanelCenter, productsPanel);
     }//GEN-LAST:event_btnProductsActionPerformed
+
+    private void btnCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomersActionPerformed
+        customers customersPanel = new customers();
+        
+        panelLoader.jPanelLoader(jPanelCenter, customersPanel);
+    }//GEN-LAST:event_btnCustomersActionPerformed
 
     /**
      * @param args the command line arguments
