@@ -17,8 +17,7 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
-            
-            
+                        
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());

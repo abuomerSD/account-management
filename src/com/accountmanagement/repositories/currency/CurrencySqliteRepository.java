@@ -5,6 +5,7 @@ import com.accountmanagement.database.DbConnection;
 import com.accountmanagement.models.Currency;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -37,22 +38,108 @@ public class CurrencySqliteRepository implements CurrencyRepository {
 
     @Override
     public boolean update(Currency newCurrency) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "UPDATE tb_currency SET Name = ? WHERE Id = ?";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setString(1, newCurrency.getName());
+            ps.setInt(2, newCurrency.getId());
+            
+            System.out.println(ps.toString());
+            
+            int result = ps.executeUpdate();
+            
+            if(result == 1) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return false;
     }
 
     @Override
     public boolean delete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "DELETE FROM tb_currency WHERE ID = ?";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, id);
+            
+            System.out.println(ps.toString());
+            
+            if(ps.executeUpdate() == 1) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return false;
     }
 
     @Override
     public Currency findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Currency currency = null;
+        String sql = "SELECT * FROM tb_currency WHERE id = ?;";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, id);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                currency = Currency.builder()
+                        .id(rs.getInt("Id"))
+                        .name(rs.getString("Name"))
+                        .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return currency;
     }
 
     @Override
     public ArrayList<Currency> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Currency> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM tb_currency;";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            System.out.println(ps.toString());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Currency currency = Currency.builder()
+                        .id(rs.getInt("Id"))
+                        .name(rs.getString("Name"))
+                        .build();
+                
+                list.add(currency);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return list;
     }
     
 }
