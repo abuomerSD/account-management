@@ -141,5 +141,34 @@ public class CurrencySqliteRepository implements CurrencyRepository {
         
         return list;
     }
+
+    @Override
+    public Currency findByName(String name) {
+        Currency currency = null;
+        String sql = "SELECT * FROM tb_currency WHERE Name = ? ;";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setString(1, name);
+            
+            System.out.println(ps.toString());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                currency = Currency.builder()
+                        .id(rs.getInt("Id"))
+                        .name(name)
+                        .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return currency;
+    }
     
 }

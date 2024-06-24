@@ -10,6 +10,7 @@ public interface CurrencyRepository {
     boolean update(Currency newCurrency);
     boolean delete(int id);
     Currency findById(int id);
+    Currency findByName(String name);
     ArrayList<Currency> findAll();
     
 }

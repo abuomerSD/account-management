@@ -10,6 +10,7 @@ public interface CustomerRepository {
     boolean update(Customer newCustomer);
     boolean delete(int id);
     Customer findById(int id);
+    Customer findByName(String name);
     ArrayList<Customer> findAll();
     ArrayList<Customer> findBySearchWords(String searchWords);
     

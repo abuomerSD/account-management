@@ -29,7 +29,9 @@ public class Customer {
         return phone;
     }
     
-    
+    public static CustomerBuilder builder(){
+        return new CustomerBuilder();
+    }
     
     
     

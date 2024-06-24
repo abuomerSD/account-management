@@ -777,6 +777,11 @@ public class customers extends javax.swing.JPanel {
             String name = txtCustomerName.getText();
             String phone = txtCustomerPhone.getText();
             
+            if(name.isEmpty() || phone.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل جميع بيانات العميل");
+                return;
+            }
+            
 //            System.out.println("id: "+ id);
             Customer newCustomer = new CustomerBuilder()
                     .id(id)
@@ -803,7 +808,14 @@ public class customers extends javax.swing.JPanel {
 
     private void btnCustomerDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerDeleteActionPerformed
         try {
+            
+            if(txtCustomerId.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "قم بإختيار العميل اولا");
+                return;
+            }
+            
             int id = Integer.valueOf(txtCustomerId.getText());
+
             
             int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف العميل رقم " + id + " ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
             

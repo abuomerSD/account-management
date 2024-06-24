@@ -985,6 +985,11 @@ public class products extends javax.swing.JPanel {
     private void btnAddProductDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductDeleteActionPerformed
         
         try {
+            if(txtProductId.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "قم بإختيار المنتج اولا");
+                return;
+            }
+            
             int id = Integer.valueOf(txtProductId.getText());
 //            ProductSqliteRepository repo = new ProductSqliteRepository();
             

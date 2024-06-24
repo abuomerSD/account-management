@@ -89,7 +89,31 @@ public class CustomerSqliteRepository implements CustomerRepository {
 
     @Override
     public Customer findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "SELECT * FROM tb_customers WHERE Id = ?";
+        
+        Customer customer = null;
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            
+            System.out.println(ps.toString());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            customer = Customer.builder()
+                    .id(id)
+                    .name(rs.getString("Name"))
+                    .build();
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return customer;
     }
 
     @Override
@@ -150,6 +174,37 @@ public class CustomerSqliteRepository implements CustomerRepository {
         }
         
         return list;
+    }
+
+    @Override
+    public Customer findByName(String name) {
+        Customer customer = null;
+        String sql = "SELECT * FROM tb_customers WHERE Name = ?";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setString(1, name);
+            
+            System.out.println(ps.toString());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                customer = Customer.builder()
+                        .id(rs.getInt("Id"))
+                        .name(name)
+                        .phone(rs.getString("Phone"))
+                        .build();
+                
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return customer;
     }
     
 }
