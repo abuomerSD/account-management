@@ -22,6 +22,7 @@ public class DatabaseTablesCreator {
         createCurrencyTable();
         createIncomingDocumentTable();
         createOutgoingDocumentTable();
+        createAccountMovementTable();
     }
 
     private static void createProductsTable() {
@@ -116,6 +117,27 @@ public class DatabaseTablesCreator {
             Statement st = con.createStatement();
             st.execute(sql);
         } catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private static void createAccountMovementTable() {
+        String sql = "CREATE TABLE  IF NOT EXISTS \"tb_account_movement\" (\n" +
+                            "	\"Date\"	VARCHAR(50),\n" +
+                            "	\"CustomerId\"	INTEGER,\n" +
+                            "	\"IncomingDocumentId\"	INTEGER,\n" +
+                            "	\"OutgoingDocumentId\"	INTEGER,\n" +
+                            "	\"IncomingValue\"	DOUBLE,\n" +
+                            "	\"OutgoingValue\"	DOUBLE,\n" +
+                            "	\"Comment\"	INTEGER\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e, "Error", 0);
         }
