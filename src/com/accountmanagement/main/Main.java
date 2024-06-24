@@ -2,12 +2,15 @@ package com.accountmanagement.main;
 
 import com.accountmanagement.database.DatabaseTablesCreator;
 import com.accountmanagement.database.DbConnection;
+import com.accountmanagement.models.OutgoingDocument;
+import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
 import com.accountmanagement.ui.Home;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -17,6 +20,9 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
+            
+
+            
             
             
         } catch (Exception e) {

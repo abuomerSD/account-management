@@ -21,6 +21,7 @@ public class DatabaseTablesCreator {
         createCustomersTable();
         createCurrencyTable();
         createIncomingDocumentTable();
+        createOutgoingDocumentTable();
     }
 
     private static void createProductsTable() {
@@ -80,6 +81,27 @@ public class DatabaseTablesCreator {
 
     private static void createIncomingDocumentTable() {
         String sql = "CREATE TABLE IF NOT EXISTS \"tb_incoming_document\" (\n" +
+                            "	\"Id\"	INTEGER NOT NULL,\n" +
+                            "	\"Date\"	VARCHAR(50),\n" +
+                            "	\"CurrencyId\"	INTEGER,\n" +
+                            "	\"CustomerId\"	INTEGER,\n" +
+                            "	\"Value\"	DOUBLE,\n" +
+                            "	\"Comment\"	VARCHAR(100),\n" +
+                            "	PRIMARY KEY(\"Id\" AUTOINCREMENT)\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
+        } catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private static void createOutgoingDocumentTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS \"tb_outgoing_document\" (\n" +
                             "	\"Id\"	INTEGER NOT NULL,\n" +
                             "	\"Date\"	VARCHAR(50),\n" +
                             "	\"CurrencyId\"	INTEGER,\n" +
