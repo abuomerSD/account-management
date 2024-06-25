@@ -15,6 +15,7 @@ import com.accountmanagement.repositories.currency.CurrencySqliteRepository;
 import com.accountmanagement.repositories.customer.CustomerSqliteRepository;
 import com.accountmanagement.repositories.incomingdocument.IncomingDocumentSqliteRepository;
 import java.awt.ComponentOrientation;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +39,10 @@ public class customers extends javax.swing.JPanel {
     CurrencySqliteRepository currencyRepo = new CurrencySqliteRepository();
     IncomingDocumentSqliteRepository incomingDocumentRepo = new IncomingDocumentSqliteRepository();
     AccountMovementSqliteRepository accountMovementRepo = new AccountMovementSqliteRepository();
+    
+    
+    
+    DecimalFormat numberFormater =  new DecimalFormat("#,###,###.##");
     
     
     /**
@@ -84,6 +89,7 @@ public class customers extends javax.swing.JPanel {
        // set tables data 
        setCustomerTableData();
        setCurrencyTableData();
+       setIncomingDocumentTableData();
        
       // customer table selection listener
       
@@ -120,6 +126,23 @@ public class customers extends javax.swing.JPanel {
             }
         });
       
+      // incoming document table selection listener
+      
+      tbIncomingDocuments.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(tbIncomingDocuments.getSelectedRow() > -1) {
+                    setSelectedIncomigDocumentDatatoTextFields();
+                }
+                
+                
+            }
+        });
+      
+      // set tbIncomingDocuments sort by id 
+      
+      tbIncomingDocuments.setAutoCreateRowSorter(true);
+      
       // set customer name combobox items
       
       setIncomingDocumentCustomerNameCbItems();
@@ -140,6 +163,16 @@ public class customers extends javax.swing.JPanel {
       clearIncomingDocumentTextFields();
     }
    
+    void setSelectedIncomigDocumentDatatoTextFields() {
+        int row = tbIncomingDocuments.getSelectedRow();
+        
+        txtIdIncomingDocument.setText(tbIncomingDocuments.getValueAt(row, 0).toString());
+        txtDateIncomingDocument.setDate(new Date((String) tbIncomingDocuments.getValueAt(row, 1)));
+        cbCutomerNameIncomingDocument.setSelectedItem(tbIncomingDocuments.getValueAt(row, 2));
+        cbCurrenyNameIncomingDocument.setSelectedItem(tbIncomingDocuments.getValueAt(row, 3));
+        txtValueIncomingDocument.setText(tbIncomingDocuments.getValueAt(row, 4).toString());
+        txtCommentIncomingDocument.setText(tbIncomingDocuments.getValueAt(row, 5).toString());
+    }
     
     private void setSelectedCustomerDataToTextFields() {
         try {
@@ -181,6 +214,34 @@ public class customers extends javax.swing.JPanel {
             }
             
             tbCustomers.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void setIncomingDocumentTableData() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbIncomingDocuments.getModel();
+            model.setRowCount(0);
+            
+            ArrayList<IncomingDocument> list = incomingDocumentRepo.findAllDesc();
+            
+            
+            for (IncomingDocument incomingDocument : list) {
+                Vector vector = new Vector();
+                vector.add(incomingDocument.getId());
+                vector.add(incomingDocument.getDate());
+                Currency currency = currencyRepo.findById(incomingDocument.getCurrencyId());
+                Customer customer = customerRepo.findById(incomingDocument.getCustomerId());
+                vector.add(customer.getName());
+                vector.add(currency.getName());
+                vector.add(numberFormater.format(incomingDocument.getValue()));
+                vector.add(incomingDocument.getComment());
+                
+                model.addRow(vector);
+            }
+            tbIncomingDocuments.setModel(model);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "خطأ", JOptionPane.ERROR_MESSAGE);
@@ -241,13 +302,11 @@ public class customers extends javax.swing.JPanel {
         btnDeleteIncomingDocument = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
-        txtSearchCustomerNameIncomingDocument = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        txtSearchCurrencyIncomingDocument = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         txtIdIncomingDocument = new javax.swing.JTextField();
         btnClearIncomingDocumentTextFields = new javax.swing.JButton();
+        jLabel21 = new javax.swing.JLabel();
+        txtSearchIdIncomingDocument = new javax.swing.JTextField();
         jPanel15 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         lbIncomingDocumentStatus = new javax.swing.JLabel();
@@ -561,6 +620,11 @@ public class customers extends javax.swing.JPanel {
         txtValueIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtValueIncomingDocument.setForeground(new java.awt.Color(0, 204, 51));
         txtValueIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtValueIncomingDocument.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtValueIncomingDocumentKeyReleased(evt);
+            }
+        });
 
         jLabel15.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -590,6 +654,11 @@ public class customers extends javax.swing.JPanel {
         btnDeleteIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnDeleteIncomingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
         btnDeleteIncomingDocument.setText("حذف");
+        btnDeleteIncomingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteIncomingDocumentActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -669,20 +738,6 @@ public class customers extends javax.swing.JPanel {
 
         jPanel14.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        txtSearchCustomerNameIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        txtSearchCustomerNameIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-
-        jLabel18.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel18.setText("اسم العميل :");
-
-        txtSearchCurrencyIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        txtSearchCurrencyIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-
-        jLabel19.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel19.setText("العملة :");
-
         jLabel20.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel20.setText("رقم السند :");
@@ -700,27 +755,35 @@ public class customers extends javax.swing.JPanel {
             }
         });
 
+        jLabel21.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel21.setText("رقم السند :");
+
+        txtSearchIdIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchIdIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSearchIdIncomingDocument.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchIdIncomingDocumentKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
-                .addContainerGap(201, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .addComponent(txtSearchCurrencyIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSearchCustomerNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                         .addComponent(btnClearIncomingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                        .addComponent(txtSearchIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
@@ -731,13 +794,10 @@ public class customers extends javax.swing.JPanel {
                     .addComponent(txtIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnClearIncomingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtSearchCustomerNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSearchCurrencyIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtSearchIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel15.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -772,6 +832,7 @@ public class customers extends javax.swing.JPanel {
 
         jPanel16.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        tbIncomingDocuments.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         tbIncomingDocuments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -780,6 +841,7 @@ public class customers extends javax.swing.JPanel {
                 "الرقم", "التاريخ", "اسم العميل", "العملة", "القيمة", "البيان"
             }
         ));
+        tbIncomingDocuments.setRowHeight(30);
         jScrollPane3.setViewportView(tbIncomingDocuments);
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
@@ -788,7 +850,7 @@ public class customers extends javax.swing.JPanel {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel16Layout.setVerticalGroup(
@@ -1248,6 +1310,7 @@ public class customers extends javax.swing.JPanel {
                 lbCurrencyStatus.setText("تم إضافة العملة " + currency.getName());
                 setCurrencyTableData();
                 setIncomingDocumentCurrencyNameCbItems();
+                clearCurrencyTextFields();
             }
         } catch (Exception e) {
            e.printStackTrace();
@@ -1322,11 +1385,97 @@ public class customers extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteCurrencyActionPerformed
 
     private void btnEditIncomingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditIncomingDocumentActionPerformed
-        // TODO add your handling code here:
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
+            
+            String date = df.format(txtDateIncomingDocument.getDate());
+            double value = Double.valueOf(txtValueIncomingDocument.getText());
+            String comment = txtCommentIncomingDocument.getText();
+            int incomingDocumentId = Integer.valueOf(txtIdIncomingDocument.getText());
+            
+            
+            HashMap<String, Integer> cutomersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+            int currencyId = currencyMap.get(cbCurrenyNameIncomingDocument.getSelectedItem().toString());
+            int customerId = cutomersMap.get(cbCutomerNameIncomingDocument.getSelectedItem().toString());
+            
+//            System.out.println(currencyId);
+//            System.out.println(customerId);
+            
+            IncomingDocument incomingDocument = IncomingDocument.builder()
+                    .id(incomingDocumentId)
+                    .date(date)
+                    .currencyId(currencyId)
+                    .customerId(customerId)
+                    .value(value)
+                    .comment(comment)
+                    .build();
+            
+            // Data validation
+            
+            if(txtIdIncomingDocument.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر سند للتعديل");
+                return;
+            }
+            
+            if(date.isEmpty()){
+                JOptionPane.showMessageDialog(null, "اختر التاريخ اولا");
+                return;
+            }
+            
+            if(value <= 0) {
+                JOptionPane.showMessageDialog(null, "ادخل قيمة عددية صحيحة");
+                return;
+            }
+            
+            if(comment.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل البيان");
+                return;
+            }
+            
+            if(currencyId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العملة");
+                return;
+            }
+            
+            if(customerId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العميل");
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد تعديل هذا السند ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result == JOptionPane.YES_OPTION) {
+                if(incomingDocumentRepo.update(incomingDocument)) {
+                    lbIncomingDocumentStatus.setText("تم تعديل سند قبض رقم :" + " " + incomingDocumentId);
+
+                    // add account movement
+                    AccountMovement accountMovement = AccountMovement.builder()
+                            .date(date)
+                            .customerId(customerId)
+                            .currencyId(currencyId)
+                            .incomingDocumentId(incomingDocumentId)
+                            .outgoingDocumentId(0)
+                            .incomingValue(value)
+                            .outgoingValue(0)
+                            .comment(comment)
+                            .build();
+
+                    accountMovementRepo.update(accountMovement);
+                    setIncomingDocumentTableData();
+                    clearIncomingDocumentTextFields();
+                }
+            }                      
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
     }//GEN-LAST:event_btnEditIncomingDocumentActionPerformed
 
     private void btnClearIncomingDocumentTextFieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearIncomingDocumentTextFieldsActionPerformed
-        // TODO add your handling code here:
+        clearIncomingDocumentTextFields();
     }//GEN-LAST:event_btnClearIncomingDocumentTextFieldsActionPerformed
 
     private void btnSaveIncomingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveIncomingDocumentActionPerformed
@@ -1401,7 +1550,7 @@ public class customers extends javax.swing.JPanel {
                         .build();
                 
                 accountMovementRepo.save(accountMovement);
-                
+                setIncomingDocumentTableData();
                 clearIncomingDocumentTextFields();
             }
             
@@ -1411,6 +1560,39 @@ public class customers extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, e, "Error", 0);
         }
     }//GEN-LAST:event_btnSaveIncomingDocumentActionPerformed
+
+    private void btnDeleteIncomingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteIncomingDocumentActionPerformed
+        try {
+            if(txtIdIncomingDocument.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر السند الذي تريد حذفه");
+            }
+            
+            long incomingDocumentId = Integer.valueOf(txtIdIncomingDocument.getText());
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف السند رقم : " + incomingDocumentId , "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result == JOptionPane.YES_OPTION) {
+                if(incomingDocumentRepo.delete(incomingDocumentId)) {
+                    lbIncomingDocumentStatus.setText("تم حذف السند رقم : " + incomingDocumentId);
+                    accountMovementRepo.delete(incomingDocumentId, 0);
+                    clearIncomingDocumentTextFields();
+                    setIncomingDocumentTableData();
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnDeleteIncomingDocumentActionPerformed
+
+    private void txtSearchIdIncomingDocumentKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchIdIncomingDocumentKeyReleased
+        filterTbIncomingDocumentById();
+    }//GEN-LAST:event_txtSearchIdIncomingDocumentKeyReleased
+
+    private void txtValueIncomingDocumentKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValueIncomingDocumentKeyReleased
+        
+    }//GEN-LAST:event_txtValueIncomingDocumentKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1436,10 +1618,9 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1482,8 +1663,7 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JTextField txtCustomerPhone;
     private com.toedter.calendar.JDateChooser txtDateIncomingDocument;
     private javax.swing.JTextField txtIdIncomingDocument;
-    private javax.swing.JTextField txtSearchCurrencyIncomingDocument;
-    private javax.swing.JTextField txtSearchCustomerNameIncomingDocument;
+    private javax.swing.JTextField txtSearchIdIncomingDocument;
     private javax.swing.JTextField txtValueIncomingDocument;
     // End of variables declaration//GEN-END:variables
 
@@ -1544,9 +1724,11 @@ public class customers extends javax.swing.JPanel {
         txtCommentIncomingDocument.setText("");
         txtDateIncomingDocument.setDate(new Date());
         txtIdIncomingDocument.setText("");
-        txtSearchCurrencyIncomingDocument.setText("");
-        txtSearchCustomerNameIncomingDocument.setText("");
+//        txtSearchCurrencyIncomingDocument.setText("");
+//        txtSearchCustomerNameIncomingDocument.setText("");
         txtValueIncomingDocument.setText("0.00");
+        cbCurrenyNameIncomingDocument.setSelectedIndex(0);
+        cbCutomerNameIncomingDocument.setSelectedIndex(0);
     }
     
     private HashMap<String, Integer> getCustomersMap() {
@@ -1569,5 +1751,45 @@ public class customers extends javax.swing.JPanel {
         }
         
         return currencyMap;
+    }
+    
+    void filterTbIncomingDocumentById() {
+        try {
+            
+            if(txtSearchIdIncomingDocument.getText().isEmpty()){
+                setIncomingDocumentTableData();
+                return;
+            }
+            
+            DefaultTableModel model = (DefaultTableModel) tbIncomingDocuments.getModel();
+            model.setRowCount(0);
+            
+            HashMap<String, Integer> customersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+//            int customerId = customersMap.get(txtSearchCustomerNameIncomingDocument.getText());
+//            int currencyId = currencyMap.get(txtSearchCurrencyIncomingDocument.getText());
+            
+            ArrayList<IncomingDocument> list = incomingDocumentRepo.filterById(Long.valueOf(txtSearchIdIncomingDocument.getText()));
+            
+            for (IncomingDocument incomingDocument : list) {
+                Vector vector = new Vector();
+                vector.add(incomingDocument.getId());
+                vector.add(incomingDocument.getDate());
+                Currency currency = currencyRepo.findById(incomingDocument.getCurrencyId());
+                Customer customer = customerRepo.findById(incomingDocument.getCustomerId());
+                vector.add(customer.getName());
+                vector.add(currency.getName());
+                vector.add(incomingDocument.getValue());
+                vector.add(incomingDocument.getComment());
+                
+                model.addRow(vector);
+            }
+            tbIncomingDocuments.setModel(model);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
     }
 }

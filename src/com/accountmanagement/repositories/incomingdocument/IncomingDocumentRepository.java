@@ -11,5 +11,8 @@ public interface IncomingDocumentRepository {
     boolean delete(long id);
     IncomingDocument findById(long id);
     ArrayList<IncomingDocument> findAll();
+    ArrayList<IncomingDocument> findAllDesc();
+    ArrayList<IncomingDocument> filterById(long id);
+    
     
 }

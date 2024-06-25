@@ -171,5 +171,73 @@ public class IncomingDocumentSqliteRepository implements IncomingDocumentReposit
         
         return list;
     }
+
+    @Override
+    public ArrayList<IncomingDocument> findAllDesc() {
+        ArrayList<IncomingDocument> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM tb_incoming_document ORDER BY Id DESC";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            
+            System.out.println(sql);
+            
+            while(rs.next()) {
+                IncomingDocument document = IncomingDocument.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .currencyId(rs.getInt("CurrencyId"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .value(rs.getDouble("Value"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                list.add(document);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return list;
+    }
+
+    @Override
+    public ArrayList<IncomingDocument> filterById(long id) {
+        ArrayList<IncomingDocument> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM tb_incoming_document WHERE id LIKE '%"+ id +"%'";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            
+            System.out.println(sql);
+            
+            while(rs.next()) {
+                IncomingDocument document = IncomingDocument.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .currencyId(rs.getInt("CurrencyId"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .value(rs.getDouble("Value"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                list.add(document);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return list;
+    }
+
+    
     
 }
