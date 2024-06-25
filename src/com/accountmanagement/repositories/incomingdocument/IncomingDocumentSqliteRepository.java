@@ -17,8 +17,9 @@ import javax.swing.JOptionPane;
 public class IncomingDocumentSqliteRepository implements IncomingDocumentRepository{
 
     @Override
-    public boolean save(IncomingDocument incomingDocument) {
+    public int save(IncomingDocument incomingDocument) {
         
+        int generatedKey = 0;
         String sql = "INSERT INTO tb_incoming_document (Date, CurrencyId, CustomerId, Value, Comment) VALUES (?, ?, ?, ?, ?) ;";
         
         try {
@@ -38,7 +39,10 @@ public class IncomingDocumentSqliteRepository implements IncomingDocumentReposit
             System.out.println(ps.toString());
             
             if(ps.executeUpdate() == 1) {
-                return true;
+                ResultSet rs = ps.getGeneratedKeys();
+                while (rs.next()) {                    
+                    generatedKey = rs.getInt(1);
+                }
             }
             
         } catch (Exception e) {
@@ -46,7 +50,7 @@ public class IncomingDocumentSqliteRepository implements IncomingDocumentReposit
             JOptionPane.showMessageDialog(null, e, "Error", 0);
         }
         
-        return false;
+        return generatedKey;
     }
 
     @Override

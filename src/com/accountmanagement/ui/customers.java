@@ -5,19 +5,27 @@
  */
 package com.accountmanagement.ui;
 
+import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.models.Currency;
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
+import com.accountmanagement.models.IncomingDocument;
+import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
 import com.accountmanagement.repositories.currency.CurrencySqliteRepository;
 import com.accountmanagement.repositories.customer.CustomerSqliteRepository;
+import com.accountmanagement.repositories.incomingdocument.IncomingDocumentSqliteRepository;
 import java.awt.ComponentOrientation;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -28,6 +36,8 @@ public class customers extends javax.swing.JPanel {
     
     CustomerSqliteRepository customerRepo = new CustomerSqliteRepository();
     CurrencySqliteRepository currencyRepo = new CurrencySqliteRepository();
+    IncomingDocumentSqliteRepository incomingDocumentRepo = new IncomingDocumentSqliteRepository();
+    AccountMovementSqliteRepository accountMovementRepo = new AccountMovementSqliteRepository();
     
     
     /**
@@ -39,6 +49,7 @@ public class customers extends javax.swing.JPanel {
        jTabbedPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        tbCustomers.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        tbCurrency.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+       tbIncomingDocuments.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        
        
         // set customer table width
@@ -46,6 +57,9 @@ public class customers extends javax.swing.JPanel {
         
         // set Currency table col width
         tbCurrency.getColumnModel().getColumn(0).setMaxWidth(150);
+        
+        // set IncomingDocument table col width
+        tbIncomingDocuments.getColumnModel().getColumn(0).setMaxWidth(150);
         
        // set tables headers center
         DefaultTableCellRenderer customerTableCellRenderer = (DefaultTableCellRenderer) tbCustomers.getTableHeader().getDefaultRenderer();
@@ -59,6 +73,12 @@ public class customers extends javax.swing.JPanel {
         
         DefaultTableCellRenderer currencyTableRenderer = (DefaultTableCellRenderer) tbCurrency.getDefaultRenderer(String.class);
         currencyTableRenderer.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer incomingDocumentTableHeaderRenderer = (DefaultTableCellRenderer) tbIncomingDocuments.getTableHeader().getDefaultRenderer();
+        incomingDocumentTableHeaderRenderer.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer incomingDocumentTableRenderer = (DefaultTableCellRenderer) tbIncomingDocuments.getDefaultRenderer(String.class);
+        incomingDocumentTableRenderer.setHorizontalAlignment(0);
 
         
        // set tables data 
@@ -99,6 +119,25 @@ public class customers extends javax.swing.JPanel {
                 }
             }
         });
+      
+      // set customer name combobox items
+      
+      setIncomingDocumentCustomerNameCbItems();
+      
+      // set customer name combobox items
+      
+      setIncomingDocumentCurrencyNameCbItems();
+      
+      // autocompelete customer name combobox
+      
+        AutoCompleteDecorator.decorate(cbCutomerNameIncomingDocument);
+        
+      // autocompelete customer name combobox
+        
+        AutoCompleteDecorator.decorate(cbCurrenyNameIncomingDocument);
+        
+      // set incoming document date and text fields
+      clearIncomingDocumentTextFields();
     }
    
     
@@ -186,6 +225,35 @@ public class customers extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCustomers = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        txtDateIncomingDocument = new com.toedter.calendar.JDateChooser();
+        jLabel12 = new javax.swing.JLabel();
+        cbCutomerNameIncomingDocument = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        cbCurrenyNameIncomingDocument = new javax.swing.JComboBox<>();
+        jLabel14 = new javax.swing.JLabel();
+        txtValueIncomingDocument = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtCommentIncomingDocument = new javax.swing.JTextField();
+        btnSaveIncomingDocument = new javax.swing.JButton();
+        btnEditIncomingDocument = new javax.swing.JButton();
+        btnDeleteIncomingDocument = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        txtSearchCustomerNameIncomingDocument = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        txtSearchCurrencyIncomingDocument = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        txtIdIncomingDocument = new javax.swing.JTextField();
+        btnClearIncomingDocumentTextFields = new javax.swing.JButton();
+        jPanel15 = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
+        lbIncomingDocumentStatus = new javax.swing.JLabel();
+        jPanel16 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tbIncomingDocuments = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
@@ -297,7 +365,7 @@ public class customers extends javax.swing.JPanel {
                 .addComponent(btnCustomerEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCustomerDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -412,15 +480,7 @@ public class customers extends javax.swing.JPanel {
             new String [] {
                 "الرقم", "اسم العميل", "رقم الهاتف"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         tbCustomers.setRowHeight(30);
         jScrollPane1.setViewportView(tbCustomers);
 
@@ -430,7 +490,7 @@ public class customers extends javax.swing.JPanel {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -473,15 +533,301 @@ public class customers extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("العملاء", jPanel1);
 
+        jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel12.setForeground(new java.awt.Color(0, 204, 0));
+
+        jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(0, 204, 0));
+        jLabel10.setText("سندات القبض :");
+
+        txtDateIncomingDocument.setDateFormatString("dd-MMMM-yyyy");
+
+        jLabel12.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel12.setText("العملة :");
+
+        cbCutomerNameIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+
+        jLabel13.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel13.setText("اسم العميل :");
+
+        cbCurrenyNameIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+
+        jLabel14.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel14.setText("المبلغ :");
+
+        txtValueIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtValueIncomingDocument.setForeground(new java.awt.Color(0, 204, 51));
+        txtValueIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        jLabel15.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel15.setText("البيان :");
+
+        txtCommentIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtCommentIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        btnSaveIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnSaveIncomingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
+        btnSaveIncomingDocument.setText("حفظ");
+        btnSaveIncomingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveIncomingDocumentActionPerformed(evt);
+            }
+        });
+
+        btnEditIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnEditIncomingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/edit.png"))); // NOI18N
+        btnEditIncomingDocument.setText("تعديل");
+        btnEditIncomingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditIncomingDocumentActionPerformed(evt);
+            }
+        });
+
+        btnDeleteIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnDeleteIncomingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
+        btnDeleteIncomingDocument.setText("حذف");
+
+        jLabel16.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel16.setText("التاريخ :");
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCommentIncomingDocument)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(cbCurrenyNameIncomingDocument, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addGap(0, 6, Short.MAX_VALUE)
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel12Layout.createSequentialGroup()
+                                .addComponent(txtValueIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtDateIncomingDocument, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbCutomerNameIncomingDocument, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDeleteIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEditIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSaveIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtDateIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbCutomerNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbCurrenyNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtValueIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCommentIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDeleteIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel14.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        txtSearchCustomerNameIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchCustomerNameIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        jLabel18.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel18.setText("اسم العميل :");
+
+        txtSearchCurrencyIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchCurrencyIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        jLabel19.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel19.setText("العملة :");
+
+        jLabel20.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel20.setText("رقم السند :");
+
+        txtIdIncomingDocument.setEditable(false);
+        txtIdIncomingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtIdIncomingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        btnClearIncomingDocumentTextFields.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnClearIncomingDocumentTextFields.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
+        btnClearIncomingDocumentTextFields.setText("إزالة تحديد");
+        btnClearIncomingDocumentTextFields.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearIncomingDocumentTextFieldsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap(201, Short.MAX_VALUE)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                        .addComponent(txtSearchCurrencyIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSearchCustomerNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                        .addComponent(btnClearIncomingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIdIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClearIncomingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearchCustomerNameIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearchCurrencyIncomingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel15.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel17.setText("شريط الحالة :");
+
+        lbIncomingDocumentStatus.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        lbIncomingDocumentStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbIncomingDocumentStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                    .addComponent(lbIncomingDocumentStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jPanel16.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        tbIncomingDocuments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "الرقم", "التاريخ", "اسم العميل", "العملة", "القيمة", "البيان"
+            }
+        ));
+        jScrollPane3.setViewportView(tbIncomingDocuments);
+
+        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
+        jPanel16.setLayout(jPanel16Layout);
+        jPanel16Layout.setHorizontalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
+        );
+        jPanel16Layout.setVerticalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 981, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 593, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("سند قبض", jPanel2);
@@ -490,11 +836,11 @@ public class customers extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 981, Short.MAX_VALUE)
+            .addGap(0, 991, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 593, Short.MAX_VALUE)
+            .addGap(0, 626, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("سند صرف", jPanel3);
@@ -596,14 +942,14 @@ public class customers extends javax.swing.JPanel {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -763,6 +1109,7 @@ public class customers extends javax.swing.JPanel {
                 lbCustomersStatus.setText("تم إضافة العميل : " + customer.getName());
                 setCustomerTableData();
                 clearCustomerTextFields();
+                setIncomingDocumentCustomerNameCbItems();
             }
             
         } catch (Exception e) {
@@ -796,6 +1143,7 @@ public class customers extends javax.swing.JPanel {
                 if(customerRepo.update(newCustomer)){
                 lbCustomersStatus.setText("تم تعديل العميل رقم " + newCustomer.getId() + " بنجاح");
                 setCustomerTableData();
+                setIncomingDocumentCustomerNameCbItems();
             }
             }
             
@@ -824,6 +1172,7 @@ public class customers extends javax.swing.JPanel {
                     lbCustomersStatus.setText("تم حذف العميل رقم " + id);
                     clearCustomerTextFields();
                     setCustomerTableData();
+                    setIncomingDocumentCustomerNameCbItems();
                 }
             }
         } catch (Exception e) {
@@ -898,6 +1247,7 @@ public class customers extends javax.swing.JPanel {
             if(currencyRepo.save(currency)) {
                 lbCurrencyStatus.setText("تم إضافة العملة " + currency.getName());
                 setCurrencyTableData();
+                setIncomingDocumentCurrencyNameCbItems();
             }
         } catch (Exception e) {
            e.printStackTrace();
@@ -933,6 +1283,7 @@ public class customers extends javax.swing.JPanel {
                     lbCurrencyStatus.setText("تم تعديل العملة رقم " + newCurrency.getId());
                     setCurrencyTableData();
                     clearCurrencyTextFields();
+                    setIncomingDocumentCurrencyNameCbItems();
                 }   
             }
             
@@ -958,6 +1309,7 @@ public class customers extends javax.swing.JPanel {
                     lbCurrencyStatus.setText("تم حذف العملة رقم " + id);
                     setCurrencyTableData();
                     clearCurrencyTextFields();
+                    setIncomingDocumentCurrencyNameCbItems();
                 }
             }
             
@@ -969,18 +1321,125 @@ public class customers extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDeleteCurrencyActionPerformed
 
+    private void btnEditIncomingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditIncomingDocumentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditIncomingDocumentActionPerformed
+
+    private void btnClearIncomingDocumentTextFieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearIncomingDocumentTextFieldsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnClearIncomingDocumentTextFieldsActionPerformed
+
+    private void btnSaveIncomingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveIncomingDocumentActionPerformed
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
+            
+            String date = df.format(txtDateIncomingDocument.getDate());
+            double value = Double.valueOf(txtValueIncomingDocument.getText());
+            String comment = txtCommentIncomingDocument.getText();
+            
+            
+            HashMap<String, Integer> cutomersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+            int currencyId = currencyMap.get(cbCurrenyNameIncomingDocument.getSelectedItem().toString());
+            int customerId = cutomersMap.get(cbCutomerNameIncomingDocument.getSelectedItem().toString());
+            
+//            System.out.println(currencyId);
+//            System.out.println(customerId);
+            
+            IncomingDocument incomingDocument = IncomingDocument.builder()
+                    .date(date)
+                    .currencyId(currencyId)
+                    .customerId(customerId)
+                    .value(value)
+                    .comment(comment)
+                    .build();
+            
+            // Data validation
+            
+            if(date.isEmpty()){
+                JOptionPane.showMessageDialog(null, "اختر التاريخ اولا");
+                return;
+            }
+            
+            if(value <= 0) {
+                JOptionPane.showMessageDialog(null, "ادخل قيمة عددية صحيحة");
+                return;
+            }
+            
+            if(comment.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل البيان");
+                return;
+            }
+            
+            if(currencyId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العملة");
+                return;
+            }
+            
+            if(customerId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العميل");
+                return;
+            }
+            
+            int generatedKey = incomingDocumentRepo.save(incomingDocument);
+            
+            System.out.println(generatedKey);
+            if(generatedKey > 0 ) {
+                lbIncomingDocumentStatus.setText("تم اضافة سند قبض رقم :" + " " + generatedKey);
+                
+                // add account movement
+                AccountMovement accountMovement = AccountMovement.builder()
+                        .date(date)
+                        .customerId(customerId)
+                        .currencyId(currencyId)
+                        .incomingDocumentId(generatedKey)
+                        .outgoingDocumentId(0)
+                        .incomingValue(value)
+                        .outgoingValue(0)
+                        .comment(comment)
+                        .build();
+                
+                accountMovementRepo.save(accountMovement);
+                
+                clearIncomingDocumentTextFields();
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnSaveIncomingDocumentActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearCurrencySelection;
     private javax.swing.JButton btnClearCutomerSelection;
+    private javax.swing.JButton btnClearIncomingDocumentTextFields;
     private javax.swing.JButton btnCustomerDelete;
     private javax.swing.JButton btnCustomerEdit;
     private javax.swing.JButton btnCustomerSave;
     private javax.swing.JButton btnDeleteCurrency;
+    private javax.swing.JButton btnDeleteIncomingDocument;
     private javax.swing.JButton btnEditCurrency;
+    private javax.swing.JButton btnEditIncomingDocument;
     private javax.swing.JButton btnSaveCurrency;
+    private javax.swing.JButton btnSaveIncomingDocument;
+    private javax.swing.JComboBox<String> cbCurrenyNameIncomingDocument;
+    private javax.swing.JComboBox<String> cbCutomerNameIncomingDocument;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -991,7 +1450,11 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1002,17 +1465,26 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lbCurrencyStatus;
     private javax.swing.JLabel lbCustomersStatus;
+    private javax.swing.JLabel lbIncomingDocumentStatus;
     private javax.swing.JTable tbCurrency;
     private javax.swing.JTable tbCustomers;
+    private javax.swing.JTable tbIncomingDocuments;
+    private javax.swing.JTextField txtCommentIncomingDocument;
     private javax.swing.JTextField txtCurrencyId;
     private javax.swing.JTextField txtCurrencyName;
     private javax.swing.JTextField txtCustomerId;
     private javax.swing.JTextField txtCustomerName;
     private javax.swing.JTextField txtCustomerNameSearch;
     private javax.swing.JTextField txtCustomerPhone;
+    private com.toedter.calendar.JDateChooser txtDateIncomingDocument;
+    private javax.swing.JTextField txtIdIncomingDocument;
+    private javax.swing.JTextField txtSearchCurrencyIncomingDocument;
+    private javax.swing.JTextField txtSearchCustomerNameIncomingDocument;
+    private javax.swing.JTextField txtValueIncomingDocument;
     // End of variables declaration//GEN-END:variables
 
     private void setCurrencyTableData() {
@@ -1040,5 +1512,62 @@ public class customers extends javax.swing.JPanel {
     private void clearCurrencyTextFields() {
         txtCurrencyId.setText("");
         txtCurrencyName.setText("");
+    }
+
+    private void setIncomingDocumentCustomerNameCbItems() {
+        try {
+            cbCutomerNameIncomingDocument.removeAllItems();
+            ArrayList<Customer> list = customerRepo.findAll();
+            for (Customer customer : list) {
+                cbCutomerNameIncomingDocument.addItem(customer.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void setIncomingDocumentCurrencyNameCbItems() {
+        try {
+            cbCurrenyNameIncomingDocument.removeAllItems();
+            ArrayList<Currency> list = currencyRepo.findAll();
+            for (Currency currency : list) {
+                cbCurrenyNameIncomingDocument.addItem(currency.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+    
+    private void clearIncomingDocumentTextFields() {
+        txtCommentIncomingDocument.setText("");
+        txtDateIncomingDocument.setDate(new Date());
+        txtIdIncomingDocument.setText("");
+        txtSearchCurrencyIncomingDocument.setText("");
+        txtSearchCustomerNameIncomingDocument.setText("");
+        txtValueIncomingDocument.setText("0.00");
+    }
+    
+    private HashMap<String, Integer> getCustomersMap() {
+        HashMap<String, Integer> customersMap = new HashMap();
+        ArrayList<Customer> customersList = customerRepo.findAll();
+
+        for (Customer customer : customersList) {
+            customersMap.put(customer.getName(), customer.getId());
+        }
+        
+        return customersMap;
+    }
+    
+    private HashMap<String, Integer> getCurrencyMap() {
+        HashMap<String, Integer> currencyMap = new HashMap();
+        ArrayList<Currency> currencyList = currencyRepo.findAll();
+
+        for (Currency currency : currencyList) {
+            currencyMap.put(currency.getName(), currency.getId());
+        }
+        
+        return currencyMap;
     }
 }

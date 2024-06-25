@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface IncomingDocumentRepository {
     
-    boolean save(IncomingDocument incomingDocument);
+    int save(IncomingDocument incomingDocument);
     boolean update(IncomingDocument newIncomingDocument);
     boolean delete(long id);
     IncomingDocument findById(long id);
