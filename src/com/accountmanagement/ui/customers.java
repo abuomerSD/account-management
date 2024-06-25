@@ -10,10 +10,12 @@ import com.accountmanagement.models.Currency;
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
 import com.accountmanagement.models.IncomingDocument;
+import com.accountmanagement.models.OutgoingDocument;
 import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
 import com.accountmanagement.repositories.currency.CurrencySqliteRepository;
 import com.accountmanagement.repositories.customer.CustomerSqliteRepository;
 import com.accountmanagement.repositories.incomingdocument.IncomingDocumentSqliteRepository;
+import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
 import java.awt.ComponentOrientation;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,7 @@ public class customers extends javax.swing.JPanel {
     CustomerSqliteRepository customerRepo = new CustomerSqliteRepository();
     CurrencySqliteRepository currencyRepo = new CurrencySqliteRepository();
     IncomingDocumentSqliteRepository incomingDocumentRepo = new IncomingDocumentSqliteRepository();
+    OutgoingDocumentSqliteRepository outgoingDocumentRepo = new OutgoingDocumentSqliteRepository();
     AccountMovementSqliteRepository accountMovementRepo = new AccountMovementSqliteRepository();
     
     
@@ -55,6 +58,7 @@ public class customers extends javax.swing.JPanel {
        tbCustomers.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        tbCurrency.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        tbIncomingDocuments.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+       tbOutgoingDocuments.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
        
        
         // set customer table width
@@ -65,6 +69,9 @@ public class customers extends javax.swing.JPanel {
         
         // set IncomingDocument table col width
         tbIncomingDocuments.getColumnModel().getColumn(0).setMaxWidth(150);
+        
+        // set Outgoing table col width
+        tbOutgoingDocuments.getColumnModel().getColumn(0).setMaxWidth(150);
         
        // set tables headers center
         DefaultTableCellRenderer customerTableCellRenderer = (DefaultTableCellRenderer) tbCustomers.getTableHeader().getDefaultRenderer();
@@ -84,12 +91,16 @@ public class customers extends javax.swing.JPanel {
         
         DefaultTableCellRenderer incomingDocumentTableRenderer = (DefaultTableCellRenderer) tbIncomingDocuments.getDefaultRenderer(String.class);
         incomingDocumentTableRenderer.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer outgoingDocumentsTableRenderer = (DefaultTableCellRenderer) tbOutgoingDocuments.getDefaultRenderer(String.class);
+        outgoingDocumentsTableRenderer.setHorizontalAlignment(0);
 
         
        // set tables data 
        setCustomerTableData();
        setCurrencyTableData();
        setIncomingDocumentTableData();
+       setOutgoingDocumentTableData();
        
       // customer table selection listener
       
@@ -139,28 +150,82 @@ public class customers extends javax.swing.JPanel {
             }
         });
       
+      // outgoing document table selection listener
+      
+      tbOutgoingDocuments.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(tbOutgoingDocuments.getSelectedRow() > -1) {
+                    setSelectedOutgoingDocumentDatatoTextFields();
+                }
+                
+                
+            }
+
+            private void setSelectedOutgoingDocumentDatatoTextFields() {
+                try {
+                    int row = tbOutgoingDocuments.getSelectedRow();
+                    
+                    txtIdOutgoingDocument.setText(tbOutgoingDocuments.getValueAt(row, 0).toString());
+                    txtDateOutgoingDocument.setDate(new Date(tbOutgoingDocuments.getValueAt(row, 1).toString()));
+                    cbCutomerNameOutgoingDocument.setSelectedItem(tbOutgoingDocuments.getValueAt(row, 2).toString());
+                    cbCurrenyNameOutgoingDocument.setSelectedItem(tbOutgoingDocuments.getValueAt(row, 3).toString());
+                    txtValueOutgoingDocument.setText(tbOutgoingDocuments.getValueAt(row, 4).toString());
+                    txtCommentOutgoingDocument.setText(tbOutgoingDocuments.getValueAt(row, 5).toString());
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e, "Error", 0);
+                }
+            }
+        });
+      
       // set tbIncomingDocuments sort by id 
       
       tbIncomingDocuments.setAutoCreateRowSorter(true);
       
-      // set customer name combobox items
+      // set IncomingDocument customer name combobox items
       
       setIncomingDocumentCustomerNameCbItems();
       
-      // set customer name combobox items
+      // set IncomingDocument currency name combobox items
       
       setIncomingDocumentCurrencyNameCbItems();
       
-      // autocompelete customer name combobox
+      // set tbIncomingDocuments sort by id 
+      
+      tbOutgoingDocuments.setAutoCreateRowSorter(true);
+      
+      // set IncomingDocument customer name combobox items
+      
+      setOutgoingDocumentCustomerNameCbItems();
+      
+      // set IncomingDocument currency name combobox items
+      
+      setOutgoingDocumentCurrencyNameCbItems();
+      
+      // autocompelete IncomingDocument customer name combobox
       
         AutoCompleteDecorator.decorate(cbCutomerNameIncomingDocument);
         
-      // autocompelete customer name combobox
+      // autocompelete IncomingDocument currency name combobox
         
         AutoCompleteDecorator.decorate(cbCurrenyNameIncomingDocument);
         
+      // autocompelete OutgoingDocument customer name combobox
+      
+        AutoCompleteDecorator.decorate(cbCutomerNameOutgoingDocument);
+        
+      // autocompelete OutgoingDocument currency name combobox
+        
+        AutoCompleteDecorator.decorate(cbCurrenyNameOutgoingDocument);
+        
       // set incoming document date and text fields
       clearIncomingDocumentTextFields();
+      
+      // set incoming document date and text fields
+      clearOutgoingDocumentTextFields();
+      
     }
    
     void setSelectedIncomigDocumentDatatoTextFields() {
@@ -314,6 +379,33 @@ public class customers extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         tbIncomingDocuments = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        txtIdOutgoingDocument = new javax.swing.JTextField();
+        btnClearOutgoingDocumentTextFields = new javax.swing.JButton();
+        jLabel23 = new javax.swing.JLabel();
+        txtSearchIdOutgoingDocument = new javax.swing.JTextField();
+        jPanel18 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        txtDateOutgoingDocument = new com.toedter.calendar.JDateChooser();
+        jLabel18 = new javax.swing.JLabel();
+        cbCutomerNameOutgoingDocument = new javax.swing.JComboBox<>();
+        jLabel19 = new javax.swing.JLabel();
+        cbCurrenyNameOutgoingDocument = new javax.swing.JComboBox<>();
+        jLabel24 = new javax.swing.JLabel();
+        txtValueOutgoingDocument = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        txtCommentOutgoingDocument = new javax.swing.JTextField();
+        btnSaveOutgoingDocument = new javax.swing.JButton();
+        btnEditOutgoingDocument = new javax.swing.JButton();
+        btnDeleteOutgoingDocument = new javax.swing.JButton();
+        jLabel26 = new javax.swing.JLabel();
+        jPanel19 = new javax.swing.JPanel();
+        jLabel27 = new javax.swing.JLabel();
+        lbOutgoingDocumentStatus = new javax.swing.JLabel();
+        jPanel20 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tbOutgoingDocuments = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -894,15 +986,304 @@ public class customers extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("سند قبض", jPanel2);
 
+        jPanel17.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel22.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel22.setText("رقم السند :");
+
+        txtIdOutgoingDocument.setEditable(false);
+        txtIdOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtIdOutgoingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        btnClearOutgoingDocumentTextFields.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnClearOutgoingDocumentTextFields.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
+        btnClearOutgoingDocumentTextFields.setText("إزالة تحديد");
+        btnClearOutgoingDocumentTextFields.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearOutgoingDocumentTextFieldsActionPerformed(evt);
+            }
+        });
+
+        jLabel23.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel23.setText("رقم السند :");
+
+        txtSearchIdOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtSearchIdOutgoingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSearchIdOutgoingDocument.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchIdOutgoingDocumentKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
+        jPanel17.setLayout(jPanel17Layout);
+        jPanel17Layout.setHorizontalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
+                        .addComponent(btnClearOutgoingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIdOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
+                        .addComponent(txtSearchIdOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel17Layout.setVerticalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIdOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClearOutgoingDocumentTextFields, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearchIdOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        jPanel18.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel18.setForeground(new java.awt.Color(0, 204, 0));
+
+        jLabel11.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 51, 0));
+        jLabel11.setText("سندات الصرف :");
+
+        txtDateOutgoingDocument.setDateFormatString("dd-MMMM-yyyy");
+
+        jLabel18.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel18.setText("العملة :");
+
+        cbCutomerNameOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+
+        jLabel19.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel19.setText("اسم العميل :");
+
+        cbCurrenyNameOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+
+        jLabel24.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel24.setText("المبلغ :");
+
+        txtValueOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtValueOutgoingDocument.setForeground(new java.awt.Color(255, 0, 0));
+        txtValueOutgoingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtValueOutgoingDocument.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtValueOutgoingDocumentKeyReleased(evt);
+            }
+        });
+
+        jLabel25.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel25.setText("البيان :");
+
+        txtCommentOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtCommentOutgoingDocument.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        btnSaveOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnSaveOutgoingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
+        btnSaveOutgoingDocument.setText("حفظ");
+        btnSaveOutgoingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveOutgoingDocumentActionPerformed(evt);
+            }
+        });
+
+        btnEditOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnEditOutgoingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/edit.png"))); // NOI18N
+        btnEditOutgoingDocument.setText("تعديل");
+        btnEditOutgoingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditOutgoingDocumentActionPerformed(evt);
+            }
+        });
+
+        btnDeleteOutgoingDocument.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnDeleteOutgoingDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
+        btnDeleteOutgoingDocument.setText("حذف");
+        btnDeleteOutgoingDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteOutgoingDocumentActionPerformed(evt);
+            }
+        });
+
+        jLabel26.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel26.setText("التاريخ :");
+
+        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
+        jPanel18.setLayout(jPanel18Layout);
+        jPanel18Layout.setHorizontalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCommentOutgoingDocument)
+                    .addGroup(jPanel18Layout.createSequentialGroup()
+                        .addComponent(cbCurrenyNameOutgoingDocument, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel18Layout.createSequentialGroup()
+                        .addGap(0, 6, Short.MAX_VALUE)
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel18Layout.createSequentialGroup()
+                                .addComponent(txtValueOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel18Layout.createSequentialGroup()
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtDateOutgoingDocument, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbCutomerNameOutgoingDocument, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDeleteOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEditOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSaveOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel18Layout.setVerticalGroup(
+            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel18Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtDateOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbCutomerNameOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbCurrenyNameOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtValueOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCommentOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDeleteOutgoingDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel19.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel27.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel27.setText("شريط الحالة :");
+
+        lbOutgoingDocumentStatus.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        lbOutgoingDocumentStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
+        jPanel19.setLayout(jPanel19Layout);
+        jPanel19Layout.setHorizontalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbOutgoingDocumentStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel19Layout.setVerticalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                    .addComponent(lbOutgoingDocumentStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jPanel20.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        tbOutgoingDocuments.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        tbOutgoingDocuments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "الرقم", "التاريخ", "اسم العميل", "العملة", "القيمة", "البيان"
+            }
+        ));
+        tbOutgoingDocuments.setRowHeight(30);
+        jScrollPane4.setViewportView(tbOutgoingDocuments);
+
+        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
+        jPanel20.setLayout(jPanel20Layout);
+        jPanel20Layout.setHorizontalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel20Layout.setVerticalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel20Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 991, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 626, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("سند صرف", jPanel3);
@@ -1172,6 +1553,8 @@ public class customers extends javax.swing.JPanel {
                 setCustomerTableData();
                 clearCustomerTextFields();
                 setIncomingDocumentCustomerNameCbItems();
+                setOutgoingDocumentCustomerNameCbItems();
+                
             }
             
         } catch (Exception e) {
@@ -1206,6 +1589,7 @@ public class customers extends javax.swing.JPanel {
                 lbCustomersStatus.setText("تم تعديل العميل رقم " + newCustomer.getId() + " بنجاح");
                 setCustomerTableData();
                 setIncomingDocumentCustomerNameCbItems();
+                setOutgoingDocumentCustomerNameCbItems();
             }
             }
             
@@ -1235,6 +1619,7 @@ public class customers extends javax.swing.JPanel {
                     clearCustomerTextFields();
                     setCustomerTableData();
                     setIncomingDocumentCustomerNameCbItems();
+                    setOutgoingDocumentCustomerNameCbItems();
                 }
             }
         } catch (Exception e) {
@@ -1310,6 +1695,7 @@ public class customers extends javax.swing.JPanel {
                 lbCurrencyStatus.setText("تم إضافة العملة " + currency.getName());
                 setCurrencyTableData();
                 setIncomingDocumentCurrencyNameCbItems();
+                setOutgoingDocumentCurrencyNameCbItems();
                 clearCurrencyTextFields();
             }
         } catch (Exception e) {
@@ -1347,6 +1733,7 @@ public class customers extends javax.swing.JPanel {
                     setCurrencyTableData();
                     clearCurrencyTextFields();
                     setIncomingDocumentCurrencyNameCbItems();
+                    setOutgoingDocumentCurrencyNameCbItems();
                 }   
             }
             
@@ -1373,6 +1760,7 @@ public class customers extends javax.swing.JPanel {
                     setCurrencyTableData();
                     clearCurrencyTextFields();
                     setIncomingDocumentCurrencyNameCbItems();
+                    setOutgoingDocumentCurrencyNameCbItems();
                 }
             }
             
@@ -1594,33 +1982,258 @@ public class customers extends javax.swing.JPanel {
         
     }//GEN-LAST:event_txtValueIncomingDocumentKeyReleased
 
+    private void btnClearOutgoingDocumentTextFieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearOutgoingDocumentTextFieldsActionPerformed
+        clearOutgoingDocumentTextFields();
+    }//GEN-LAST:event_btnClearOutgoingDocumentTextFieldsActionPerformed
+
+    private void txtSearchIdOutgoingDocumentKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchIdOutgoingDocumentKeyReleased
+        filterTbOutgoingDocumentById();
+    }//GEN-LAST:event_txtSearchIdOutgoingDocumentKeyReleased
+
+    private void txtValueOutgoingDocumentKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValueOutgoingDocumentKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValueOutgoingDocumentKeyReleased
+
+    private void btnSaveOutgoingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveOutgoingDocumentActionPerformed
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
+            
+            String date = df.format(txtDateOutgoingDocument.getDate());
+            double value = Double.valueOf(txtValueOutgoingDocument.getText());
+            String comment = txtCommentOutgoingDocument.getText();
+            
+            
+            HashMap<String, Integer> cutomersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+            int currencyId = currencyMap.get(cbCurrenyNameOutgoingDocument.getSelectedItem().toString());
+            int customerId = cutomersMap.get(cbCutomerNameOutgoingDocument.getSelectedItem().toString());
+            
+//            System.out.println(currencyId);
+//            System.out.println(customerId);
+            
+            OutgoingDocument outgoingDocument = OutgoingDocument.builder()
+                    .date(date)
+                    .currencyId(currencyId)
+                    .customerId(customerId)
+                    .value(value)
+                    .comment(comment)
+                    .build();
+            
+            // Data validation
+            
+            if(date.isEmpty()){
+                JOptionPane.showMessageDialog(null, "اختر التاريخ اولا");
+                return;
+            }
+            
+            if(value <= 0) {
+                JOptionPane.showMessageDialog(null, "ادخل قيمة عددية صحيحة");
+                return;
+            }
+            
+            if(comment.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل البيان");
+                return;
+            }
+            
+            if(currencyId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العملة");
+                return;
+            }
+            
+            if(customerId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العميل");
+                return;
+            }
+            
+            long generatedKey = outgoingDocumentRepo.save(outgoingDocument);
+            
+            System.out.println(generatedKey);
+            if(generatedKey > 0 ) {
+                lbOutgoingDocumentStatus.setText("تم اضافة سند صرف رقم :" + " " + generatedKey);
+                
+                // add account movement
+                AccountMovement accountMovement = AccountMovement.builder()
+                        .date(date)
+                        .customerId(customerId)
+                        .currencyId(currencyId)
+                        .incomingDocumentId(0)
+                        .outgoingDocumentId(generatedKey)
+                        .incomingValue(0)
+                        .outgoingValue(value)
+                        .comment(comment)
+                        .build();
+                
+                accountMovementRepo.save(accountMovement);
+                setOutgoingDocumentTableData();
+                clearOutgoingDocumentTextFields();
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnSaveOutgoingDocumentActionPerformed
+
+    private void btnEditOutgoingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditOutgoingDocumentActionPerformed
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
+            
+            String date = df.format(txtDateOutgoingDocument.getDate());
+            double value = Double.valueOf(txtValueOutgoingDocument.getText());
+            String comment = txtCommentOutgoingDocument.getText();
+            int outgoingDocumentId = Integer.valueOf(txtIdOutgoingDocument.getText());
+            
+            
+            HashMap<String, Integer> cutomersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+            int currencyId = currencyMap.get(cbCurrenyNameOutgoingDocument.getSelectedItem().toString());
+            int customerId = cutomersMap.get(cbCutomerNameOutgoingDocument.getSelectedItem().toString());
+            
+//            System.out.println(currencyId);
+//            System.out.println(customerId);
+            
+            OutgoingDocument outgoingDocument = OutgoingDocument.builder()
+                    .id(outgoingDocumentId)
+                    .date(date)
+                    .currencyId(currencyId)
+                    .customerId(customerId)
+                    .value(value)
+                    .comment(comment)
+                    .build();
+            
+            // Data validation
+            
+            if(txtIdOutgoingDocument.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر سند للتعديل");
+                return;
+            }
+            
+            if(date.isEmpty()){
+                JOptionPane.showMessageDialog(null, "اختر التاريخ اولا");
+                return;
+            }
+            
+            if(value <= 0) {
+                JOptionPane.showMessageDialog(null, "ادخل قيمة عددية صحيحة");
+                return;
+            }
+            
+            if(comment.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل البيان");
+                return;
+            }
+            
+            if(currencyId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العملة");
+                return;
+            }
+            
+            if(customerId <= 0) {
+                JOptionPane.showMessageDialog(null, "اختر العميل");
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد تعديل هذا السند ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result == JOptionPane.YES_OPTION) {
+                if(outgoingDocumentRepo.update(outgoingDocument)) {
+                    lbOutgoingDocumentStatus.setText("تم تعديل سند صرف رقم :" + " " + outgoingDocumentId);
+
+                    // add account movement
+                    AccountMovement accountMovement = AccountMovement.builder()
+                            .date(date)
+                            .customerId(customerId)
+                            .currencyId(currencyId)
+                            .incomingDocumentId(0)
+                            .outgoingDocumentId(outgoingDocumentId)
+                            .incomingValue(0)
+                            .outgoingValue(value)
+                            .comment(comment)
+                            .build();
+
+                    accountMovementRepo.update(accountMovement);
+                    setOutgoingDocumentTableData();
+                    clearOutgoingDocumentTextFields();
+                }
+            }                      
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnEditOutgoingDocumentActionPerformed
+
+    private void btnDeleteOutgoingDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteOutgoingDocumentActionPerformed
+        try {
+            if(txtIdOutgoingDocument.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر السند الذي تريد حذفه");
+            }
+            
+            long outgoingDocumentId = Integer.valueOf(txtIdOutgoingDocument.getText());
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف السند رقم : " + outgoingDocumentId , "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result == JOptionPane.YES_OPTION) {
+                if(outgoingDocumentRepo.delete(outgoingDocumentId)) {
+                    lbOutgoingDocumentStatus.setText("تم حذف السند رقم : " + outgoingDocumentId);
+                    accountMovementRepo.delete(0, outgoingDocumentId);
+                    clearOutgoingDocumentTextFields();
+                    setOutgoingDocumentTableData();
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnDeleteOutgoingDocumentActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearCurrencySelection;
     private javax.swing.JButton btnClearCutomerSelection;
     private javax.swing.JButton btnClearIncomingDocumentTextFields;
+    private javax.swing.JButton btnClearOutgoingDocumentTextFields;
     private javax.swing.JButton btnCustomerDelete;
     private javax.swing.JButton btnCustomerEdit;
     private javax.swing.JButton btnCustomerSave;
     private javax.swing.JButton btnDeleteCurrency;
     private javax.swing.JButton btnDeleteIncomingDocument;
+    private javax.swing.JButton btnDeleteOutgoingDocument;
     private javax.swing.JButton btnEditCurrency;
     private javax.swing.JButton btnEditIncomingDocument;
+    private javax.swing.JButton btnEditOutgoingDocument;
     private javax.swing.JButton btnSaveCurrency;
     private javax.swing.JButton btnSaveIncomingDocument;
+    private javax.swing.JButton btnSaveOutgoingDocument;
     private javax.swing.JComboBox<String> cbCurrenyNameIncomingDocument;
+    private javax.swing.JComboBox<String> cbCurrenyNameOutgoingDocument;
     private javax.swing.JComboBox<String> cbCutomerNameIncomingDocument;
+    private javax.swing.JComboBox<String> cbCutomerNameOutgoingDocument;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1636,7 +2249,11 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1647,14 +2264,18 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lbCurrencyStatus;
     private javax.swing.JLabel lbCustomersStatus;
     private javax.swing.JLabel lbIncomingDocumentStatus;
+    private javax.swing.JLabel lbOutgoingDocumentStatus;
     private javax.swing.JTable tbCurrency;
     private javax.swing.JTable tbCustomers;
     private javax.swing.JTable tbIncomingDocuments;
+    private javax.swing.JTable tbOutgoingDocuments;
     private javax.swing.JTextField txtCommentIncomingDocument;
+    private javax.swing.JTextField txtCommentOutgoingDocument;
     private javax.swing.JTextField txtCurrencyId;
     private javax.swing.JTextField txtCurrencyName;
     private javax.swing.JTextField txtCustomerId;
@@ -1662,9 +2283,13 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JTextField txtCustomerNameSearch;
     private javax.swing.JTextField txtCustomerPhone;
     private com.toedter.calendar.JDateChooser txtDateIncomingDocument;
+    private com.toedter.calendar.JDateChooser txtDateOutgoingDocument;
     private javax.swing.JTextField txtIdIncomingDocument;
+    private javax.swing.JTextField txtIdOutgoingDocument;
     private javax.swing.JTextField txtSearchIdIncomingDocument;
+    private javax.swing.JTextField txtSearchIdOutgoingDocument;
     private javax.swing.JTextField txtValueIncomingDocument;
+    private javax.swing.JTextField txtValueOutgoingDocument;
     // End of variables declaration//GEN-END:variables
 
     private void setCurrencyTableData() {
@@ -1786,6 +2411,114 @@ public class customers extends javax.swing.JPanel {
                 model.addRow(vector);
             }
             tbIncomingDocuments.setModel(model);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void clearOutgoingDocumentTextFields() {
+        try {
+            txtCommentOutgoingDocument.setText("");
+            txtDateOutgoingDocument.setDate(new Date());
+            txtIdOutgoingDocument.setText("");
+    //        txtSearchCurrencyIncomingDocument.setText("");
+    //        txtSearchCustomerNameIncomingDocument.setText("");
+            txtValueOutgoingDocument.setText("0.00");
+            cbCurrenyNameOutgoingDocument.setSelectedIndex(0);
+            cbCutomerNameOutgoingDocument.setSelectedIndex(0);
+        } catch (Exception e) {
+        }
+    }
+
+    private void setOutgoingDocumentCustomerNameCbItems() {
+        try {
+            cbCutomerNameOutgoingDocument.removeAllItems();
+            ArrayList<Customer> list = customerRepo.findAll();
+            for (Customer customer : list) {
+                cbCutomerNameOutgoingDocument.addItem(customer.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void setOutgoingDocumentCurrencyNameCbItems() {
+        try {
+            cbCurrenyNameOutgoingDocument.removeAllItems();
+            ArrayList<Currency> list = currencyRepo.findAll();
+            for (Currency currency : list) {
+                cbCurrenyNameOutgoingDocument.addItem(currency.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void setOutgoingDocumentTableData() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbOutgoingDocuments.getModel();
+            model.setRowCount(0);
+            
+            ArrayList <OutgoingDocument> list = outgoingDocumentRepo.findAllDesc();
+            
+            for (OutgoingDocument outgoingDocument : list) {
+                Vector vector = new Vector();
+                vector.add(outgoingDocument.getId());
+                vector.add(outgoingDocument.getDate());
+                Customer customer = customerRepo.findById(outgoingDocument.getCustomerId());
+                Currency currency = currencyRepo.findById(outgoingDocument.getCurrencyId());
+                vector.add(customer.getName());
+                vector.add(currency.getName());
+                vector.add(numberFormater.format(outgoingDocument.getValue()));
+                vector.add(outgoingDocument.getComment());
+                
+                model.addRow(vector);
+            }
+            
+            tbOutgoingDocuments.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+    
+    private void filterTbOutgoingDocumentById() {
+        try {
+            
+            if(txtSearchIdOutgoingDocument.getText().isEmpty()){
+                setOutgoingDocumentTableData();
+                return;
+            }
+            
+            DefaultTableModel model = (DefaultTableModel) tbOutgoingDocuments.getModel();
+            model.setRowCount(0);
+            
+            HashMap<String, Integer> customersMap = getCustomersMap();
+            HashMap<String, Integer> currencyMap = getCurrencyMap();
+            
+//            int customerId = customersMap.get(txtSearchCustomerNameIncomingDocument.getText());
+//            int currencyId = currencyMap.get(txtSearchCurrencyIncomingDocument.getText());
+            
+            ArrayList<OutgoingDocument> list = outgoingDocumentRepo.filterById(Long.valueOf(txtSearchIdOutgoingDocument.getText()));
+            
+            for (OutgoingDocument outgoingDocument : list) {
+                Vector vector = new Vector();
+                vector.add(outgoingDocument.getId());
+                vector.add(outgoingDocument.getDate());
+                Currency currency = currencyRepo.findById(outgoingDocument.getCurrencyId());
+                Customer customer = customerRepo.findById(outgoingDocument.getCustomerId());
+                vector.add(customer.getName());
+                vector.add(currency.getName());
+                vector.add(outgoingDocument.getValue());
+                vector.add(outgoingDocument.getComment());
+                
+                model.addRow(vector);
+            }
+            tbOutgoingDocuments.setModel(model);
             
         } catch (Exception e) {
             e.printStackTrace();

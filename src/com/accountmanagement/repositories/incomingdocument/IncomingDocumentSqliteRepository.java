@@ -209,7 +209,7 @@ public class IncomingDocumentSqliteRepository implements IncomingDocumentReposit
     public ArrayList<IncomingDocument> filterById(long id) {
         ArrayList<IncomingDocument> list = new ArrayList<>();
         
-        String sql = "SELECT * FROM tb_incoming_document WHERE id LIKE '%"+ id +"%'";
+        String sql = "SELECT * FROM tb_incoming_document WHERE Id LIKE '%"+ id +"%'";
         
         try {
             Connection con = DbConnection.getConnection();

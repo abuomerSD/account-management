@@ -14,7 +14,8 @@ import javax.swing.JOptionPane;
 public class OutgoingDocumentSqliteRepository implements OutgoingDocumentRepository{
 
     @Override
-    public boolean save(OutgoingDocument outgoingDocument) {
+    public long save(OutgoingDocument outgoingDocument) {
+        long generatedKey = 0;
         String sql = "INSERT INTO tb_outgoing_document (Date, CurrencyId, CustomerId, Value, Comment) VALUES (?, ?, ?, ?, ?) ;";
         
         try {
@@ -34,7 +35,11 @@ public class OutgoingDocumentSqliteRepository implements OutgoingDocumentReposit
             System.out.println(ps.toString());
             
             if(ps.executeUpdate() == 1) {
-                return true;
+                ResultSet rs = ps.getGeneratedKeys();
+                while(rs.next()) {
+                    return rs.getLong(1);
+                }
+                
             }
             
         } catch (Exception e) {
@@ -42,7 +47,7 @@ public class OutgoingDocumentSqliteRepository implements OutgoingDocumentReposit
             JOptionPane.showMessageDialog(null, e, "Error", 0);
         }
         
-        return false;
+        return generatedKey;
     }
 
     @Override
@@ -136,6 +141,70 @@ public class OutgoingDocumentSqliteRepository implements OutgoingDocumentReposit
         ArrayList<OutgoingDocument> list = new ArrayList<>();
         
         String sql = "SELECT * FROM tb_outgoing_document";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            
+            System.out.println(sql);
+            
+            while(rs.next()) {
+                OutgoingDocument document = OutgoingDocument.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .currencyId(rs.getInt("CurrencyId"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .value(rs.getDouble("Value"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                list.add(document);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return list;
+    }
+
+    public ArrayList<OutgoingDocument> findAllDesc() {
+        ArrayList<OutgoingDocument> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM tb_outgoing_document ORDER BY Id DESC";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            
+            System.out.println(sql);
+            
+            while(rs.next()) {
+                OutgoingDocument document = OutgoingDocument.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .currencyId(rs.getInt("CurrencyId"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .value(rs.getDouble("Value"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                list.add(document);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+        
+        return list;
+    }
+
+    public ArrayList<OutgoingDocument> filterById(Long id) {
+        ArrayList<OutgoingDocument> list = new ArrayList<>();
+        
+        String sql = "SELECT * FROM tb_outgoing_document WHERE Id LIKE '%"+ id +"%'";
         
         try {
             Connection con = DbConnection.getConnection();
