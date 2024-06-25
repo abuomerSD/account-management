@@ -126,6 +126,7 @@ public class DatabaseTablesCreator {
         String sql = "CREATE TABLE  IF NOT EXISTS \"tb_account_movement\" (\n" +
                             "	\"Date\"	VARCHAR(50),\n" +
                             "	\"CustomerId\"	INTEGER,\n" +
+                            "   \"CurrencyId\"	INTEGER,\n" +
                             "	\"IncomingDocumentId\"	INTEGER,\n" +
                             "	\"OutgoingDocumentId\"	INTEGER,\n" +
                             "	\"IncomingValue\"	DOUBLE,\n" +

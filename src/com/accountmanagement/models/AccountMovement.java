@@ -10,12 +10,12 @@ public class AccountMovement {
     private double incomingValue;
     private double outgoingValue;
     private String comment;
-    private double balance = incomingValue - outgoingValue;
+    private double balance;
 
     public AccountMovement() {
     }
 
-    public AccountMovement(String date, int customerId, int currencyId, long incomingDocumentId, long outgoingDocumentId, double incomingValue, double outgoingValue, String comment) {
+    public AccountMovement(String date, int customerId, int currencyId, long incomingDocumentId, long outgoingDocumentId, double incomingValue, double outgoingValue, String comment, double balance) {
         this.date = date;
         this.customerId = customerId;
         this.currencyId = currencyId;
@@ -24,7 +24,10 @@ public class AccountMovement {
         this.incomingValue = incomingValue;
         this.outgoingValue = outgoingValue;
         this.comment = comment;
+        this.balance = balance;
     }
+
+    
 
     public String getDate() {
         return date;

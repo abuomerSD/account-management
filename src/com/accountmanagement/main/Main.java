@@ -2,7 +2,9 @@ package com.accountmanagement.main;
 
 import com.accountmanagement.database.DatabaseTablesCreator;
 import com.accountmanagement.database.DbConnection;
+import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.models.OutgoingDocument;
+import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
 import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
 import com.accountmanagement.ui.Home;
 import java.awt.event.WindowAdapter;
@@ -21,10 +23,24 @@ public class Main {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
             
-
-            
-            
-            
+//            AccountMovementSqliteRepository repo = new AccountMovementSqliteRepository();
+//            
+//            AccountMovement accm = AccountMovement.builder()
+//                    .date("28-june-2024")
+//                    .customerId(2)
+//                    .currencyId(1)
+//                    .incomingDocumentId(9)
+//                    .outgoingDocumentId(0)
+//                    .incomingValue(50000.99)
+//                    .outgoingValue(0)
+//                    .comment("دفعة اخيرة من الحساب")
+//                    .build();
+//            
+//            double balance = repo.getCustomerBalance(2, 1);
+//            
+//            System.out.println(balance);
+                     
+                        
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

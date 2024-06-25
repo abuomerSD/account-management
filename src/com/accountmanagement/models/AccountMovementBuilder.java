@@ -10,7 +10,7 @@ public class AccountMovementBuilder {
     private double incomingValue;
     private double outgoingValue;
     private String comment;
-
+    private double balance;
 
     
     public AccountMovementBuilder date(String date) {
@@ -53,8 +53,13 @@ public class AccountMovementBuilder {
         return this;
     }
     
+    public AccountMovementBuilder balance(double balance) {
+        this.balance = balance;
+        return this;
+    }
+    
     public AccountMovement build() {
-        return new AccountMovement(date, customerId, currencyId, incomingDocumentId, outgoingDocumentId, incomingValue, outgoingValue, comment);
+        return new AccountMovement(date, customerId, currencyId, incomingDocumentId, outgoingDocumentId, incomingValue, outgoingValue, comment, balance);
     }
     
 }
