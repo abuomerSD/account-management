@@ -8,6 +8,7 @@ package com.accountmanagement.ui;
 import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.models.Currency;
 import com.accountmanagement.models.Customer;
+import com.accountmanagement.models.CustomerBalance;
 import com.accountmanagement.models.CustomerBuilder;
 import com.accountmanagement.models.IncomingDocument;
 import com.accountmanagement.models.OutgoingDocument;
@@ -16,6 +17,7 @@ import com.accountmanagement.repositories.currency.CurrencySqliteRepository;
 import com.accountmanagement.repositories.customer.CustomerSqliteRepository;
 import com.accountmanagement.repositories.incomingdocument.IncomingDocumentSqliteRepository;
 import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
+import com.accountmanagement.utils.Constants;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.io.File;
@@ -57,6 +59,7 @@ public class customers extends javax.swing.JPanel {
     
     
     DecimalFormat numberFormater =  new DecimalFormat("#,###,###.##");
+    String reportsPath = Constants.REPORTS_PATH;
     
     
     /**
@@ -2393,7 +2396,13 @@ public class customers extends javax.swing.JPanel {
             int customerId = (int) customersMap.get(customerName);
             int currencyId = (int) currencyMap.get(currencyName);
             
-            String reportName = "/com/accountmanagement/reports/customerAccountByCurrencyName.jasper";
+            
+            
+            String reportName = reportsPath +"customerAccountByCurrencyName.jasper";
+            
+//            JOptionPane.showMessageDialog(null, System.getProperty("user.dir") + "\n" + reportName);
+//            JOptionPane.showMessageDialog(null, reportName);
+
             HashMap map = new HashMap();
 //            map.put("customerName", "customer");
 //            map.put("currencyName", "");
@@ -2444,7 +2453,66 @@ public class customers extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPrintCustomerBalanceReportActionPerformed
 
     private void btnPrintTotalCustomerBalanceReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintTotalCustomerBalanceReportActionPerformed
-        // TODO add your handling code here:
+        try {
+            panelReport.removeAll();
+            panelReport.updateUI();
+            
+            HashMap customersMap = getCustomersMap();
+            HashMap currencyMap = getCurrencyMap();
+            
+            String customerName = cbCustomerNameReportsUI.getSelectedItem().toString();
+//            String currencyName = cbCurrencyNameReportsUI.getSelectedItem().toString();
+            
+            int customerId = (int) customersMap.get(customerName);
+//            int currencyId = (int) currencyMap.get(currencyName);
+            
+            
+            
+            String reportName = reportsPath +"customerTotalBalance.jasper";
+            
+
+            HashMap map = new HashMap();
+
+            map.put("customerName", customerName);
+            
+            ArrayList<Currency> currencyList = currencyRepo.findAll();
+            
+            ArrayList<CustomerBalance> customerBalanceList = new ArrayList<>();
+            
+            double balance = 0.00;
+            
+            for (Currency currency : currencyList) {
+                balance = accountMovementRepo.getCustomerBalance(customerId, currency.getId());
+                
+                CustomerBalance customerBalance = new CustomerBalance(customerName, numberFormater.format(balance));
+                
+            }
+                                            
+            
+            InputStream report;
+            report = getClass().getResourceAsStream(reportName);
+            
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(customerBalanceList);
+            
+//            JasperPrint jPrint = JasperFillManager.fillReport(report, map);
+            JasperPrint jPrint = JasperFillManager.fillReport(report, map, ds);
+            
+            JRViewer viewer = new JRViewer(jPrint);
+            viewer.setZoomRatio(CENTER_ALIGNMENT);
+            viewer.setVisible(true);
+            
+            panelReport.setLayout(new BorderLayout());
+            panelReport.repaint();
+            
+            panelReport.add(viewer);
+            panelReport.revalidate();
+            
+//            JasperViewer.viewReport(jPrint, false);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
     }//GEN-LAST:event_btnPrintTotalCustomerBalanceReportActionPerformed
 
 
