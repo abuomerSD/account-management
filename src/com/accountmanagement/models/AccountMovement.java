@@ -12,6 +12,10 @@ public class AccountMovement {
     private String comment;
     private double balance;
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     public AccountMovement() {
     }
 

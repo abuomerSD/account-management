@@ -16,7 +16,11 @@ import com.accountmanagement.repositories.currency.CurrencySqliteRepository;
 import com.accountmanagement.repositories.customer.CustomerSqliteRepository;
 import com.accountmanagement.repositories.incomingdocument.IncomingDocumentSqliteRepository;
 import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
+import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +32,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -204,6 +215,14 @@ public class customers extends javax.swing.JPanel {
       
       setOutgoingDocumentCurrencyNameCbItems();
       
+      // set reports customer cb data
+      
+      setCbCustomerNameReportsUIData();
+      
+      // set reports currency cb data
+      
+      setCbCurrencyNameReportsUIData();
+      
       // autocompelete IncomingDocument customer name combobox
       
         AutoCompleteDecorator.decorate(cbCutomerNameIncomingDocument);
@@ -220,12 +239,50 @@ public class customers extends javax.swing.JPanel {
         
         AutoCompleteDecorator.decorate(cbCurrenyNameOutgoingDocument);
         
+      // autocompelete Reports customer name combobox
+      
+        AutoCompleteDecorator.decorate(cbCustomerNameReportsUI);
+        
+      // autocompelete Reports currency name combobox
+      
+        AutoCompleteDecorator.decorate(cbCurrencyNameReportsUI);
+        
       // set incoming document date and text fields
       clearIncomingDocumentTextFields();
       
       // set incoming document date and text fields
       clearOutgoingDocumentTextFields();
       
+    }
+    
+    private void setCbCustomerNameReportsUIData() {
+        try {
+            ArrayList<Customer> list = customerRepo.findAll();
+            
+            cbCustomerNameReportsUI.removeAllItems();
+            
+            for (Customer customer : list) {
+                cbCustomerNameReportsUI.addItem(customer.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+    
+    private void setCbCurrencyNameReportsUIData() {
+        try {
+            ArrayList<Currency> list = currencyRepo.findAll();
+            
+            cbCurrencyNameReportsUI.removeAllItems();
+            
+            for (Currency currency : list) {
+                cbCurrencyNameReportsUI.addItem(currency.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
     }
    
     void setSelectedIncomigDocumentDatatoTextFields() {
@@ -350,6 +407,24 @@ public class customers extends javax.swing.JPanel {
         jPanel8 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCustomers = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel13 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txtCurrencyName = new javax.swing.JTextField();
+        btnSaveCurrency = new javax.swing.JButton();
+        btnEditCurrency = new javax.swing.JButton();
+        btnDeleteCurrency = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbCurrency = new javax.swing.JTable();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        lbCurrencyStatus = new javax.swing.JLabel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        txtCurrencyId = new javax.swing.JTextField();
+        btnClearCurrencySelection = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -406,24 +481,16 @@ public class customers extends javax.swing.JPanel {
         jPanel20 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tbOutgoingDocuments = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel13 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        txtCurrencyName = new javax.swing.JTextField();
-        btnSaveCurrency = new javax.swing.JButton();
-        btnEditCurrency = new javax.swing.JButton();
-        btnDeleteCurrency = new javax.swing.JButton();
-        jPanel9 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tbCurrency = new javax.swing.JTable();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        lbCurrencyStatus = new javax.swing.JLabel();
-        jPanel11 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        txtCurrencyId = new javax.swing.JTextField();
-        btnClearCurrencySelection = new javax.swing.JButton();
+        jPanel21 = new javax.swing.JPanel();
+        jPanel22 = new javax.swing.JPanel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        btnPrintCustomerBalanceReport = new javax.swing.JButton();
+        btnPrintTotalCustomerBalanceReport = new javax.swing.JButton();
+        cbCustomerNameReportsUI = new javax.swing.JComboBox<>();
+        jLabel30 = new javax.swing.JLabel();
+        cbCurrencyNameReportsUI = new javax.swing.JComboBox<>();
+        panelReport = new javax.swing.JPanel();
 
         jTabbedPane1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 
@@ -683,6 +750,224 @@ public class customers extends javax.swing.JPanel {
         );
 
         jTabbedPane1.addTab("العملاء", jPanel1);
+
+        jPanel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
+        jLabel4.setText("العملات : ");
+
+        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel7.setText("اسم العملة :");
+        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        txtCurrencyName.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtCurrencyName.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        btnSaveCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnSaveCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
+        btnSaveCurrency.setText("حفظ");
+        btnSaveCurrency.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveCurrencyActionPerformed(evt);
+            }
+        });
+
+        btnEditCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnEditCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/edit.png"))); // NOI18N
+        btnEditCurrency.setText("تعديل");
+        btnEditCurrency.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditCurrencyActionPerformed(evt);
+            }
+        });
+
+        btnDeleteCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnDeleteCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
+        btnDeleteCurrency.setText("حذف");
+        btnDeleteCurrency.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteCurrencyActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel4))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnDeleteCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEditCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                            .addComponent(btnSaveCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCurrencyName))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtCurrencyName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDeleteCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        tbCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        tbCurrency.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "الرقم", "اسم العملة"
+            }
+        ));
+        tbCurrency.setRowHeight(30);
+        jScrollPane2.setViewportView(tbCurrency);
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel8.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel8.setText("شريط الحالة :");
+        jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        lbCurrencyStatus.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        lbCurrencyStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbCurrencyStatus.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbCurrencyStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(lbCurrencyStatus))
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+
+        jPanel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel9.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel9.setText("رقم العملة :");
+        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        txtCurrencyId.setEditable(false);
+        txtCurrencyId.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        txtCurrencyId.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtCurrencyId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCurrencyIdActionPerformed(evt);
+            }
+        });
+
+        btnClearCurrencySelection.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnClearCurrencySelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
+        btnClearCurrencySelection.setText("إزالة تحديد");
+        btnClearCurrencySelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearCurrencySelectionActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnClearCurrencySelection, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCurrencyId, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addGap(0, 9, Short.MAX_VALUE)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtCurrencyId, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClearCurrencySelection, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jTabbedPane1.addTab("العملات", jPanel4);
 
         jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel12.setForeground(new java.awt.Color(0, 204, 0));
@@ -1288,223 +1573,119 @@ public class customers extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("سند صرف", jPanel3);
 
-        jPanel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel22.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
-        jLabel4.setText("العملات : ");
+        jLabel28.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
+        jLabel28.setText("العملات : ");
 
-        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel7.setText("اسم العملة :");
-        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jLabel29.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel29.setText("اسم العميل :");
+        jLabel29.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
-        txtCurrencyName.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        txtCurrencyName.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-
-        btnSaveCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnSaveCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
-        btnSaveCurrency.setText("حفظ");
-        btnSaveCurrency.addActionListener(new java.awt.event.ActionListener() {
+        btnPrintCustomerBalanceReport.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnPrintCustomerBalanceReport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/print.png"))); // NOI18N
+        btnPrintCustomerBalanceReport.setText("طباعة");
+        btnPrintCustomerBalanceReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveCurrencyActionPerformed(evt);
+                btnPrintCustomerBalanceReportActionPerformed(evt);
             }
         });
 
-        btnEditCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnEditCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/edit.png"))); // NOI18N
-        btnEditCurrency.setText("تعديل");
-        btnEditCurrency.addActionListener(new java.awt.event.ActionListener() {
+        btnPrintTotalCustomerBalanceReport.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnPrintTotalCustomerBalanceReport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/total-report.png"))); // NOI18N
+        btnPrintTotalCustomerBalanceReport.setText("طباعة تقرير اجمالي");
+        btnPrintTotalCustomerBalanceReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditCurrencyActionPerformed(evt);
+                btnPrintTotalCustomerBalanceReportActionPerformed(evt);
             }
         });
 
-        btnDeleteCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnDeleteCurrency.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
-        btnDeleteCurrency.setText("حذف");
-        btnDeleteCurrency.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteCurrencyActionPerformed(evt);
-            }
-        });
+        cbCustomerNameReportsUI.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 
-        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
-        jPanel13.setLayout(jPanel13Layout);
-        jPanel13Layout.setHorizontalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
+        jLabel30.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel30.setText("العملة :");
+        jLabel30.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        cbCurrencyNameReportsUI.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+
+        javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
+        jPanel22.setLayout(jPanel22Layout);
+        jPanel22Layout.setHorizontalGroup(
+            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel22Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel4))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnDeleteCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnEditCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                            .addComponent(btnSaveCurrency, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtCurrencyName))
+                        .addComponent(jLabel28))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
+                        .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPrintTotalCustomerBalanceReport, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                            .addComponent(btnPrintCustomerBalanceReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbCustomerNameReportsUI, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
+                        .addComponent(cbCurrencyNameReportsUI, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-        jPanel13Layout.setVerticalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
+        jPanel22Layout.setVerticalGroup(
+            jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel22Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4)
+                .addComponent(jLabel28)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtCurrencyName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29)
+                    .addComponent(cbCustomerNameReportsUI, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel30)
+                    .addComponent(cbCurrencyNameReportsUI, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEditCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnPrintCustomerBalanceReport, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDeleteCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnPrintTotalCustomerBalanceReport, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(331, Short.MAX_VALUE))
         );
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panelReport.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        tbCurrency.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        tbCurrency.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        javax.swing.GroupLayout panelReportLayout = new javax.swing.GroupLayout(panelReport);
+        panelReport.setLayout(panelReportLayout);
+        panelReportLayout.setHorizontalGroup(
+            panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 633, Short.MAX_VALUE)
+        );
+        panelReportLayout.setVerticalGroup(
+            panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
-            },
-            new String [] {
-                "الرقم", "اسم العملة"
-            }
-        ));
-        tbCurrency.setRowHeight(30);
-        jScrollPane2.setViewportView(tbCurrency);
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
+        jPanel21.setLayout(jPanel21Layout);
+        jPanel21Layout.setHorizontalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
+                .addComponent(panelReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+        jPanel21Layout.setVerticalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel8.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel8.setText("شريط الحالة :");
-        jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-
-        lbCurrencyStatus.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        lbCurrencyStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbCurrencyStatus.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbCurrencyStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(lbCurrencyStatus))
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
-        jPanel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel9.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel9.setText("رقم العملة :");
-        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-
-        txtCurrencyId.setEditable(false);
-        txtCurrencyId.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        txtCurrencyId.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtCurrencyId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCurrencyIdActionPerformed(evt);
-            }
-        });
-
-        btnClearCurrencySelection.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnClearCurrencySelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearCurrencySelection.setText("إزالة تحديد");
-        btnClearCurrencySelection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearCurrencySelectionActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnClearCurrencySelection, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtCurrencyId, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                .addGap(0, 9, Short.MAX_VALUE)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtCurrencyId, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClearCurrencySelection, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jTabbedPane1.addTab("العملات", jPanel4);
+        jTabbedPane1.addTab("كشف حساب العميل", jPanel21);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -1554,6 +1735,7 @@ public class customers extends javax.swing.JPanel {
                 clearCustomerTextFields();
                 setIncomingDocumentCustomerNameCbItems();
                 setOutgoingDocumentCustomerNameCbItems();
+                setCbCustomerNameReportsUIData();
                 
             }
             
@@ -1590,6 +1772,7 @@ public class customers extends javax.swing.JPanel {
                 setCustomerTableData();
                 setIncomingDocumentCustomerNameCbItems();
                 setOutgoingDocumentCustomerNameCbItems();
+                setCbCustomerNameReportsUIData();
             }
             }
             
@@ -1620,6 +1803,7 @@ public class customers extends javax.swing.JPanel {
                     setCustomerTableData();
                     setIncomingDocumentCustomerNameCbItems();
                     setOutgoingDocumentCustomerNameCbItems();
+                    setCbCustomerNameReportsUIData();
                 }
             }
         } catch (Exception e) {
@@ -1697,6 +1881,7 @@ public class customers extends javax.swing.JPanel {
                 setIncomingDocumentCurrencyNameCbItems();
                 setOutgoingDocumentCurrencyNameCbItems();
                 clearCurrencyTextFields();
+                setCbCurrencyNameReportsUIData();
             }
         } catch (Exception e) {
            e.printStackTrace();
@@ -1734,6 +1919,7 @@ public class customers extends javax.swing.JPanel {
                     clearCurrencyTextFields();
                     setIncomingDocumentCurrencyNameCbItems();
                     setOutgoingDocumentCurrencyNameCbItems();
+                    setCbCurrencyNameReportsUIData();
                 }   
             }
             
@@ -1761,6 +1947,7 @@ public class customers extends javax.swing.JPanel {
                     clearCurrencyTextFields();
                     setIncomingDocumentCurrencyNameCbItems();
                     setOutgoingDocumentCurrencyNameCbItems();
+                    setCbCurrencyNameReportsUIData();
                 }
             }
             
@@ -2192,6 +2379,74 @@ public class customers extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDeleteOutgoingDocumentActionPerformed
 
+    private void btnPrintCustomerBalanceReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintCustomerBalanceReportActionPerformed
+        try {
+            panelReport.removeAll();
+            panelReport.updateUI();
+            
+            HashMap customersMap = getCustomersMap();
+            HashMap currencyMap = getCurrencyMap();
+            
+            String customerName = cbCustomerNameReportsUI.getSelectedItem().toString();
+            String currencyName = cbCurrencyNameReportsUI.getSelectedItem().toString();
+            
+            int customerId = (int) customersMap.get(customerName);
+            int currencyId = (int) currencyMap.get(currencyName);
+            
+            String reportName = "/com/accountmanagement/reports/customerAccountByCurrencyName.jasper";
+            HashMap map = new HashMap();
+//            map.put("customerName", "customer");
+//            map.put("currencyName", "");
+//            map.put("total", 100);
+            map.put("customerName", customerName);
+            map.put("currencyName", currencyName);
+            
+            ArrayList<AccountMovement> list = accountMovementRepo.findByCustomerIdAndCurrencyId(customerId, currencyId);
+//            JasperReport jsR = JasperCompileManager.compileReport(new FileInputStream(new File(this.getClass().getResource(reportName).getPath().g)));
+            
+            double balance = 0.00;
+            
+            for (AccountMovement accountMovement : list) {
+                double b = accountMovement.getOutgoingValue() - accountMovement.getIncomingValue();
+                balance = balance + b;
+//                accountMovement.builder().balance(balance).build();
+                accountMovement.setBalance(balance);
+                System.out.println(balance);
+            }
+            
+            String sBalance = numberFormater.format(balance);
+            map.put("balance", sBalance);
+            
+            InputStream report;
+            report = getClass().getResourceAsStream(reportName);
+            
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(list);
+            
+//            JasperPrint jPrint = JasperFillManager.fillReport(report, map);
+            JasperPrint jPrint = JasperFillManager.fillReport(report, map, ds);
+            
+            JRViewer viewer = new JRViewer(jPrint);
+            viewer.setZoomRatio(CENTER_ALIGNMENT);
+            viewer.setVisible(true);
+            
+            panelReport.setLayout(new BorderLayout());
+            panelReport.repaint();
+            
+            panelReport.add(viewer);
+            panelReport.revalidate();
+            
+//            JasperViewer.viewReport(jPrint, false);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }//GEN-LAST:event_btnPrintCustomerBalanceReportActionPerformed
+
+    private void btnPrintTotalCustomerBalanceReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintTotalCustomerBalanceReportActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnPrintTotalCustomerBalanceReportActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearCurrencySelection;
@@ -2207,11 +2462,15 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JButton btnEditCurrency;
     private javax.swing.JButton btnEditIncomingDocument;
     private javax.swing.JButton btnEditOutgoingDocument;
+    private javax.swing.JButton btnPrintCustomerBalanceReport;
+    private javax.swing.JButton btnPrintTotalCustomerBalanceReport;
     private javax.swing.JButton btnSaveCurrency;
     private javax.swing.JButton btnSaveIncomingDocument;
     private javax.swing.JButton btnSaveOutgoingDocument;
+    private javax.swing.JComboBox<String> cbCurrencyNameReportsUI;
     private javax.swing.JComboBox<String> cbCurrenyNameIncomingDocument;
     private javax.swing.JComboBox<String> cbCurrenyNameOutgoingDocument;
+    private javax.swing.JComboBox<String> cbCustomerNameReportsUI;
     private javax.swing.JComboBox<String> cbCutomerNameIncomingDocument;
     private javax.swing.JComboBox<String> cbCutomerNameOutgoingDocument;
     private javax.swing.JLabel jLabel1;
@@ -2234,7 +2493,10 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2254,6 +2516,8 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -2270,6 +2534,7 @@ public class customers extends javax.swing.JPanel {
     private javax.swing.JLabel lbCustomersStatus;
     private javax.swing.JLabel lbIncomingDocumentStatus;
     private javax.swing.JLabel lbOutgoingDocumentStatus;
+    private javax.swing.JPanel panelReport;
     private javax.swing.JTable tbCurrency;
     private javax.swing.JTable tbCustomers;
     private javax.swing.JTable tbIncomingDocuments;
@@ -2352,8 +2617,8 @@ public class customers extends javax.swing.JPanel {
 //        txtSearchCurrencyIncomingDocument.setText("");
 //        txtSearchCustomerNameIncomingDocument.setText("");
         txtValueIncomingDocument.setText("0.00");
-        cbCurrenyNameIncomingDocument.setSelectedIndex(0);
-        cbCutomerNameIncomingDocument.setSelectedIndex(0);
+//        cbCurrenyNameIncomingDocument.setSelectedIndex(0);
+//        cbCutomerNameIncomingDocument.setSelectedIndex(0);
     }
     
     private HashMap<String, Integer> getCustomersMap() {
@@ -2426,8 +2691,8 @@ public class customers extends javax.swing.JPanel {
     //        txtSearchCurrencyIncomingDocument.setText("");
     //        txtSearchCustomerNameIncomingDocument.setText("");
             txtValueOutgoingDocument.setText("0.00");
-            cbCurrenyNameOutgoingDocument.setSelectedIndex(0);
-            cbCutomerNameOutgoingDocument.setSelectedIndex(0);
+//            cbCurrenyNameOutgoingDocument.setSelectedIndex(0);
+//            cbCutomerNameOutgoingDocument.setSelectedIndex(0);
         } catch (Exception e) {
         }
     }
