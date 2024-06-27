@@ -2484,7 +2484,9 @@ public class customers extends javax.swing.JPanel {
             for (Currency currency : currencyList) {
                 balance = accountMovementRepo.getCustomerBalance(customerId, currency.getId());
                 
-                CustomerBalance customerBalance = new CustomerBalance(customerName, numberFormater.format(balance));
+                CustomerBalance customerBalance = new CustomerBalance(currency.getName(), numberFormater.format(balance));
+                
+                customerBalanceList.add(customerBalance);
                 
             }
                                             
