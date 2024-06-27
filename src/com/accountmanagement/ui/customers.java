@@ -1799,6 +1799,17 @@ public class customers extends javax.swing.JPanel {
             
             int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف العميل رقم " + id + " ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
             
+            ArrayList<AccountMovement> accountMovementList = accountMovementRepo.findAll();
+            
+            // check if customer have an account movement
+            
+            for (AccountMovement accountMovement : accountMovementList) {
+                if(id == accountMovement.getCustomerId()) {
+                    JOptionPane.showMessageDialog(null, "لا يمكن حذف عميل لديه حركة سندات", "خطأ", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
             if(result == JOptionPane.YES_OPTION){
                 if(customerRepo.delete(id)){
                     lbCustomersStatus.setText("تم حذف العميل رقم " + id);
@@ -1942,6 +1953,17 @@ public class customers extends javax.swing.JPanel {
             int id = Integer.valueOf(txtCurrencyId.getText());
             
             int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف العملة رقم " + id, "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            // check if the currency have an account movement
+            
+            ArrayList<AccountMovement> accountMovementList = accountMovementRepo.findAll();
+            
+            for (AccountMovement accountMovement : accountMovementList) {
+                if(id == accountMovement.getCurrencyId()) {
+                    JOptionPane.showMessageDialog(null, "لا يمكن حذف عملة لديها حركة سندات", "خطأ", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             
             if(result == JOptionPane.YES_OPTION) {
                 if(currencyRepo.delete(id)){
