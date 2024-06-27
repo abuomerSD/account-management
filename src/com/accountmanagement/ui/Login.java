@@ -148,8 +148,7 @@ public class Login extends javax.swing.JFrame {
         try {
             String username = txtUsername.getText();
             String password = txtPassword.getText();
-            System.out.println(username);
-            System.out.println(password);
+
             
             if(username.isEmpty()){
                 JOptionPane.showMessageDialog(null, "ادخل اسم المستخدم");
@@ -162,7 +161,7 @@ public class Login extends javax.swing.JFrame {
             }
             
             if(username.equals(Constants.ADMIN_USER_NAME) && password.equals(Constants.ADMIN_PASSWORD)) {
-                System.out.println("match");
+                
                 Home home = new Home();
                 home.setExtendedState(home.MAXIMIZED_BOTH);
                 home.setVisible(true);

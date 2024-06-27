@@ -1,20 +1,11 @@
 package com.accountmanagement.main;
 
 import com.accountmanagement.database.DatabaseTablesCreator;
-import com.accountmanagement.database.DbConnection;
 import com.accountmanagement.models.AccountMovement;
-import com.accountmanagement.models.OutgoingDocument;
 import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
-import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
-import com.accountmanagement.ui.Home;
 import com.accountmanagement.ui.Login;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Main {
@@ -23,7 +14,15 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
+            
+            
+            if(!isActivated()){
+                JOptionPane.showMessageDialog(null, "انتهت المدة التجريبية");
+                return;
+            } 
+            
             Login login = new Login();
+            login.setLocationRelativeTo(null);
             login.setVisible(true);
                      
                         
@@ -31,6 +30,28 @@ public class Main {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
    
+    }
+    
+    private static boolean isActivated() {
+        
+        boolean activated = true;
+        
+        try {
+            AccountMovementSqliteRepository repo = new AccountMovementSqliteRepository();
+            ArrayList<AccountMovement> list = repo.findAll();
+            
+            if(activated == false){
+                
+                if(list.size() > 50) {                    
+                    return activated;
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return true;
     }
    
 }
