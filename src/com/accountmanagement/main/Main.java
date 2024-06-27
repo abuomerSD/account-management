@@ -7,6 +7,7 @@ import com.accountmanagement.models.OutgoingDocument;
 import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
 import com.accountmanagement.repositories.outgoingdocument.OutgoingDocumentSqliteRepository;
 import com.accountmanagement.ui.Home;
+import com.accountmanagement.ui.Login;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -22,75 +23,14 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
-            
-//            AccountMovementSqliteRepository repo = new AccountMovementSqliteRepository();
-//            
-//            AccountMovement accm = AccountMovement.builder()
-//                    .date("28-june-2024")
-//                    .customerId(2)
-//                    .currencyId(1)
-//                    .incomingDocumentId(9)
-//                    .outgoingDocumentId(0)
-//                    .incomingValue(50000.99)
-//                    .outgoingValue(0)
-//                    .comment("دفعة اخيرة من الحساب")
-//                    .build();
-//            
-//            double balance = repo.getCustomerBalance(2, 1);
-//            
-//            System.out.println(balance);
+            Login login = new Login();
+            login.setVisible(true);
                      
                         
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        
-        Connection con = DbConnection.getConnection();
-        Connection con2 = DbConnection.getConnection();
-        
-        if(con == con2) {
-            System.out.println("con == con2");
-        }
-        
-        
-        
-        if(!con.isClosed()){
-            System.out.println("connected");
-        }
-        
-        Home home = new Home();
-        home.setExtendedState(home.MAXIMIZED_BOTH);
-        home.setVisible(true);
-        home.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        WindowListener listener = new WindowAdapter() {
-            @Override 
-            public void windowClosing(WindowEvent we) {
-                
-                closeDbConnection();
-                home.setVisible(false);
-                home.dispose();
-
-            }
-};
-        
-        
-        home.addWindowListener(listener);
    
     }
-    
-    
-    private static void closeDbConnection() {
-        Connection con = DbConnection.getConnection();
-        
-        try{
-            if(! con.isClosed()){
-            con.close();
-            if(con.isClosed()) 
-                    System.out.println("con closed");
-        }
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+   
 }
