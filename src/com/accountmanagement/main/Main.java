@@ -2,7 +2,9 @@ package com.accountmanagement.main;
 
 import com.accountmanagement.database.DatabaseTablesCreator;
 import com.accountmanagement.models.AccountMovement;
+import com.accountmanagement.models.SalesInvoiceHeader;
 import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
+import com.accountmanagement.repositories.salesinvoiceheader.SalesInvoiceHeaderSqliteRepository;
 import com.accountmanagement.ui.Login;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ public class Main {
         try {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
+            
+            
             
             // check if the app activated
             

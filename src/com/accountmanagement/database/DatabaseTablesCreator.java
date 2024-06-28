@@ -25,6 +25,7 @@ public class DatabaseTablesCreator {
         createOutgoingDocumentTable();
         createAccountMovementTable();
         createSalesInvoiceHeaderTable();
+        createSalesInvoiceDetailsTable();
     }
 
     private static void createProductsTable() {
@@ -163,7 +164,7 @@ public class DatabaseTablesCreator {
     }
 
     private static void createSalesInvoiceHeaderTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS \"tb_sales_invoice\"  (\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS \"tb_sales_invoice_header\"  (\n" +
                             "	\"Id\"	INTEGER NOT NULL,\n" +
                             "	\"Date\"	VARCHAR(50),\n" +
                             "	\"CustomerId\"	INTEGER,\n" +
@@ -177,8 +178,29 @@ public class DatabaseTablesCreator {
                             ");";
         
         try {
-            
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
         } catch (Exception e) {
+        }
+    }
+
+    private static void createSalesInvoiceDetailsTable() {
+        String sql = "CREATE TABLE  IF NOT EXISTS \"tb_sales_invoice_details\" (\n" +
+                            "	\"HeaderId\"	INTEGER NOT NULL,\n" +
+                            "	\"ProductName\"	VARCHAR(100),\n" +
+                            "	\"ProductQuantity\"	DOUBLE,\n" +
+                            "	\"ProductPrice\"	DOUBLE,\n" +
+                            "	\"ProductTotal\"	DOUBLE\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
         }
     }
     
