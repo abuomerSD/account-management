@@ -141,7 +141,8 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnInvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvoicesActionPerformed
-        // TODO add your handling code here:
+        salesInvoices salesivoices = new salesInvoices();
+        panelLoader.jPanelLoader(jPanelCenter, salesivoices);
     }//GEN-LAST:event_btnInvoicesActionPerformed
 
     private void btnProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductsActionPerformed

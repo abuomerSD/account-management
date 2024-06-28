@@ -19,6 +19,7 @@ public class DatabaseTablesCreator {
     public static void createDbTables() {
         createProductsTable();
         createCustomersTable();
+        createSCustomersTable();
         createCurrencyTable();
         createIncomingDocumentTable();
         createOutgoingDocumentTable();
@@ -141,6 +142,22 @@ public class DatabaseTablesCreator {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private static void createSCustomersTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS tb_s_customers (\n" +
+                            "	Id INTEGER   PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
+                            "	Name VARCHAR(50) NOT NULL UNIQUE,\n" +
+                            "	Phone VARCHAR(50) NOT NULL\n" +
+                            ");";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con .createStatement();
+            st.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

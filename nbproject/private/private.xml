@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/Users/asdf/Documents/Eltayeb/Code/AccountManagement/src/reports/customerTotalBalance.jrxml</file>
-            <file>file:/Users/asdf/Documents/Eltayeb/Code/AccountManagement/src/com/accountmanagement/models/CustomerBalance.java</file>
-            <file>file:/Users/asdf/Documents/Eltayeb/Code/AccountManagement/src/com/accountmanagement/repositories/accountmovement/AccountMovementSqliteRepository.java</file>
-            <file>file:/Users/asdf/Documents/Eltayeb/Code/AccountManagement/src/reports/customerAccountByCurrencyName.jrxml</file>
-            <file>file:/Users/asdf/Documents/Eltayeb/Code/AccountManagement/src/com/accountmanagement/ui/customers.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

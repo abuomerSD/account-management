@@ -175,7 +175,7 @@ public class AccountMovementSqliteRepository implements AccountMovementRepositor
         return list;
     }
 
-    @Override
+     @Override
     public double getCustomerBalance(int customerId, int currencyId) {
         double balance = 0.0;
         String sql = " SELECT * FROM tb_account_movement WHERE CustomerId=? AND CurrencyId=? ";

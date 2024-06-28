@@ -15,6 +15,7 @@ public class Main {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
             
+            // check if the app activated
             
             if(!isActivated()){
                 JOptionPane.showMessageDialog(null, "انتهت المدة التجريبية");
