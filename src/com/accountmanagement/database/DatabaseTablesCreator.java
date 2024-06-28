@@ -24,6 +24,7 @@ public class DatabaseTablesCreator {
         createIncomingDocumentTable();
         createOutgoingDocumentTable();
         createAccountMovementTable();
+        createSalesInvoiceHeaderTable();
     }
 
     private static void createProductsTable() {
@@ -158,6 +159,26 @@ public class DatabaseTablesCreator {
             st.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void createSalesInvoiceHeaderTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS \"tb_sales_invoice\"  (\n" +
+                            "	\"Id\"	INTEGER NOT NULL,\n" +
+                            "	\"Date\"	VARCHAR(50),\n" +
+                            "	\"CustomerId\"	INTEGER,\n" +
+                            "	\"Total\"	DOUBLE,\n" +
+                            "	\"IsFileType\"	BOOLEAN,\n" +
+                            "	\"FilePath\"	VARCHAR(100),\n" +
+                            "	\"Tax\"	DOUBLE,\n" +
+                            "	\"Discount\"	DOUBLE,\n" +
+                            "	\"Comment\"	VARCHAR(100),\n" +
+                            "	PRIMARY KEY(\"Id\" AUTOINCREMENT)\n" +
+                            ");";
+        
+        try {
+            
+        } catch (Exception e) {
         }
     }
     
