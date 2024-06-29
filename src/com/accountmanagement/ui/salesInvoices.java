@@ -3,6 +3,7 @@ package com.accountmanagement.ui;
 
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
+import com.accountmanagement.models.SalesInvoiceHeader;
 import com.accountmanagement.repositories.sCustomer.ScustomerSqliteRepository;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
@@ -955,6 +956,11 @@ public class salesInvoices extends javax.swing.JPanel {
         btnSaveInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
         btnSaveInvoice.setText("حفظ الفاتورة");
         btnSaveInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+        btnSaveInvoice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveInvoiceActionPerformed(evt);
+            }
+        });
 
         btnNewInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnNewInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/new.png"))); // NOI18N
@@ -1265,6 +1271,10 @@ public class salesInvoices extends javax.swing.JPanel {
         setInvoiceTotals();
     }//GEN-LAST:event_txtDiscountKeyReleased
 
+    private void btnSaveInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveInvoiceActionPerformed
+        saveInvoice();
+    }//GEN-LAST:event_btnSaveInvoiceActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
@@ -1469,6 +1479,42 @@ public class salesInvoices extends javax.swing.JPanel {
             lbDiscount.setText(numberFormater.format(discount));
             lbTax.setText(numberFormater.format(tax));
             lbProductsTotal.setText(numberFormater.format(productsTotal));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void saveInvoice() {
+        try {
+            // invoice header
+            
+            String date = txtInvoicedate.getDate().toString();
+            String customerName = cbCustomerName.getSelectedItem().toString();
+            boolean isFileType;
+            String filePath = null;
+            
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")){
+                isFileType = true;
+                filePath = txtFilePath.getText();
+            } else {
+                isFileType = false;
+            }
+            
+            double tax = Double.valueOf(txtTax.getText());
+            double discount = Double.valueOf(txtDiscount.getText());
+            String comment = txtComment.getText();
+            double total = Double.valueOf(lbInvoiceTotal.getText());
+            
+//            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
+//                    .date(date)
+//                    .customerId(1)
+//                    .total(total)
+                    
+                    
+            
+            // invoice details
             
         } catch (Exception e) {
             e.printStackTrace();
