@@ -4,9 +4,11 @@ package com.accountmanagement.ui;
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
 import com.accountmanagement.repositories.sCustomer.ScustomerSqliteRepository;
-import com.sun.javafx.scene.control.skin.TableColumnHeader;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
@@ -18,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 public class salesInvoices extends javax.swing.JPanel {
+    
+    DecimalFormat numberFormater =  new DecimalFormat("#,###,###.##");
 
     ScustomerSqliteRepository customerRepo = new ScustomerSqliteRepository();
     
@@ -27,18 +31,32 @@ public class salesInvoices extends javax.swing.JPanel {
         // RTL
         jTabbedPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         tbCustomers.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        tbProducts.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
         // set tables data
         
         setCustomerTableData();
         
         // table renderer
+        
         DefaultTableCellRenderer tbCustomersRenderer = (DefaultTableCellRenderer) tbCustomers.getDefaultRenderer(String.class);
         tbCustomersRenderer.setHorizontalAlignment(0);
+        
+        DefaultTableCellRenderer tbProductsRenderer = (DefaultTableCellRenderer) tbProducts.getDefaultRenderer(String.class);
+        tbProductsRenderer.setHorizontalAlignment(0);
+        
+        JTableHeader tbProductsHeader = tbProducts.getTableHeader();
+        tbProductsHeader.setDefaultRenderer(tbProductsRenderer);
+        tbProductsHeader.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+       
         
         JTableHeader tbCustomersHeader = tbCustomers.getTableHeader();
         tbCustomersHeader.setDefaultRenderer(tbCustomersRenderer);
         tbCustomersHeader.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        
+//        tbProducts.setDefaultRenderer(String.class, renderer);
+        
+        
         
         // table listener
         tbCustomers.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -53,6 +71,69 @@ public class salesInvoices extends javax.swing.JPanel {
             }
             
         });
+        
+        
+        // set customer combo box items
+        setCbCustomerInvoiceUiData();
+        
+        
+        // add numbers only for textfeilds
+        
+        txtTax.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent ke) {
+            String value = txtTax.getText();
+            int l = value.length();
+            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+               txtTax.setEditable(true);
+               lbInvoiceStatus.setText("");
+            } else {
+               txtTax.setEditable(false);
+               lbInvoiceStatus.setText("ادخل ارقام فقط");
+            }
+         }
+      });
+        
+        txtDiscount.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent ke) {
+            String value = txtDiscount.getText();
+            int l = value.length();
+            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+               txtDiscount.setEditable(true);
+               lbInvoiceStatus.setText("");
+            } else {
+               txtDiscount.setEditable(false);
+               lbInvoiceStatus.setText("ادخل ارقام فقط");
+            }
+         }
+      });
+        
+        txtProductQty.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent ke) {
+            String value = txtProductQty.getText();
+            int l = value.length();
+            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+               txtProductQty.setEditable(true);
+               lbInvoiceStatus.setText("");
+            } else {
+               txtProductQty.setEditable(false);
+               lbInvoiceStatus.setText("ادخل ارقام فقط");
+            }
+         }
+      });
+        
+        txtProductPrice.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent ke) {
+            String value = txtProductPrice.getText();
+            int l = value.length();
+            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+               txtProductPrice.setEditable(true);
+               lbInvoiceStatus.setText("");
+            } else {
+               txtProductPrice.setEditable(false);
+               lbInvoiceStatus.setText("ادخل ارقام فقط");
+            }
+         }
+      });
         
     }
 
@@ -126,13 +207,13 @@ public class salesInvoices extends javax.swing.JPanel {
         txtDiscount = new javax.swing.JTextField();
         txtComment = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
-        btnSaveInvoice = new javax.swing.JButton();
-        btnPrintInvoice = new javax.swing.JButton();
-        btnPrintInvoice1 = new javax.swing.JButton();
         jPanel14 = new javax.swing.JPanel();
         jLabel25 = new javax.swing.JLabel();
         lbInvoiceStatus = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        btnSaveInvoice = new javax.swing.JButton();
+        btnNewInvoice = new javax.swing.JButton();
+        btnPrintInvoice = new javax.swing.JButton();
         invoiceListPanel = new javax.swing.JPanel();
 
         setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -407,7 +488,7 @@ public class salesInvoices extends javax.swing.JPanel {
         );
         customersPanelLayout.setVerticalGroup(
             customersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 664, Short.MAX_VALUE)
+            .addGap(0, 670, Short.MAX_VALUE)
             .addGroup(customersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(customersPanelLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -537,6 +618,8 @@ public class salesInvoices extends javax.swing.JPanel {
 
         txtProductName.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtProductName.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtProductName.setFocusCycleRoot(true);
+        txtProductName.setNextFocusableComponent(txtProductQty);
         txtProductName.setPreferredSize(new java.awt.Dimension(80, 40));
 
         jLabel12.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -545,11 +628,19 @@ public class salesInvoices extends javax.swing.JPanel {
 
         txtProductQty.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtProductQty.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtProductQty.setName(""); // NOI18N
+        txtProductQty.setNextFocusableComponent(txtProductPrice);
         txtProductQty.setPreferredSize(new java.awt.Dimension(80, 40));
 
         txtProductPrice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtProductPrice.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtProductPrice.setNextFocusableComponent(txtProductName);
         txtProductPrice.setPreferredSize(new java.awt.Dimension(80, 40));
+        txtProductPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProductPriceActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -643,6 +734,7 @@ public class salesInvoices extends javax.swing.JPanel {
 
         jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        tbProducts.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         tbProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -651,6 +743,7 @@ public class salesInvoices extends javax.swing.JPanel {
                 "اسم الصنف", "العدد", "السعر", "الاجمالي"
             }
         ));
+        tbProducts.setRowHeight(30);
         jScrollPane2.setViewportView(tbProducts);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
@@ -751,7 +844,15 @@ public class salesInvoices extends javax.swing.JPanel {
 
         txtTax.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtTax.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTax.setText("0.00");
+        txtTax.setFocusCycleRoot(true);
+        txtTax.setNextFocusableComponent(txtDiscount);
         txtTax.setPreferredSize(new java.awt.Dimension(80, 40));
+        txtTax.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTaxKeyReleased(evt);
+            }
+        });
 
         jLabel22.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -763,10 +864,18 @@ public class salesInvoices extends javax.swing.JPanel {
 
         txtDiscount.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtDiscount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtDiscount.setText("0.00");
+        txtDiscount.setNextFocusableComponent(txtComment);
         txtDiscount.setPreferredSize(new java.awt.Dimension(80, 40));
+        txtDiscount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDiscountKeyReleased(evt);
+            }
+        });
 
         txtComment.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         txtComment.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtComment.setNextFocusableComponent(btnSaveInvoice);
         txtComment.setPreferredSize(new java.awt.Dimension(80, 40));
 
         jLabel24.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -811,59 +920,6 @@ public class salesInvoices extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jPanel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btnSaveInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnSaveInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
-        btnSaveInvoice.setText("حفظ الفاتورة");
-        btnSaveInvoice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveInvoiceActionPerformed(evt);
-            }
-        });
-
-        btnPrintInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnPrintInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/print.png"))); // NOI18N
-        btnPrintInvoice.setText("طباعة الفاتورة");
-        btnPrintInvoice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrintInvoiceActionPerformed(evt);
-            }
-        });
-
-        btnPrintInvoice1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        btnPrintInvoice1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/new.png"))); // NOI18N
-        btnPrintInvoice1.setText("فاتورة جديدة");
-        btnPrintInvoice1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrintInvoice1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
-        jPanel13.setLayout(jPanel13Layout);
-        jPanel13Layout.setHorizontalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSaveInvoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnPrintInvoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnPrintInvoice1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel13Layout.setVerticalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnSaveInvoice)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnPrintInvoice)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnPrintInvoice1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jPanel14.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel25.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -893,6 +949,47 @@ public class salesInvoices extends javax.swing.JPanel {
                 .addGap(0, 16, Short.MAX_VALUE))
         );
 
+        jPanel15.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnSaveInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnSaveInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/save.png"))); // NOI18N
+        btnSaveInvoice.setText("حفظ الفاتورة");
+        btnSaveInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+
+        btnNewInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnNewInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/new.png"))); // NOI18N
+        btnNewInvoice.setText("فاتورة جديدة");
+        btnNewInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+
+        btnPrintInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        btnPrintInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/print.png"))); // NOI18N
+        btnPrintInvoice.setText("طباعة الفاتورة");
+        btnPrintInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSaveInvoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnNewInvoice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPrintInvoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnSaveInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPrintInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNewInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout invoicePanelLayout = new javax.swing.GroupLayout(invoicePanel);
         invoicePanel.setLayout(invoicePanelLayout);
         invoicePanelLayout.setHorizontalGroup(
@@ -907,7 +1004,7 @@ public class salesInvoices extends javax.swing.JPanel {
                         .addGroup(invoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jPanel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(invoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -932,14 +1029,13 @@ public class salesInvoices extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(invoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(invoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(invoicePanelLayout.createSequentialGroup()
                         .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(7, 7, 7)
-                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("فاتورة جديدة", invoicePanel);
@@ -952,7 +1048,7 @@ public class salesInvoices extends javax.swing.JPanel {
         );
         invoiceListPanelLayout.setVerticalGroup(
             invoiceListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 664, Short.MAX_VALUE)
+            .addGap(0, 670, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("قائمة الفواتير", invoiceListPanel);
@@ -1001,6 +1097,7 @@ public class salesInvoices extends javax.swing.JPanel {
                 lbCustomersStatus.setText("تم إضافة العميل : " + customer.getName());
                 setCustomerTableData();
                 clearCustomerTextFields();
+                setCbCustomerInvoiceUiData();
                 setCbCustomerInvoiceUiData();
 
             }
@@ -1111,32 +1208,62 @@ public class salesInvoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnClearCutomerSelectionActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        // TODO add your handling code here:
+        addProductToTable();
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
-        // TODO add your handling code here:
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            int row = tbProducts.getSelectedRow();          
+          
+            lbInvoiceStatus.setText("تم حذف المنتج " + tbProducts.getValueAt(row, 0));
+            
+            model.removeRow(row);
+            
+            setInvoiceTotals();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_btnDeleteProductActionPerformed
 
     private void btnDeleteAllProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAllProductsActionPerformed
-        // TODO add your handling code here:
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            
+            if(model.getRowCount() == 0) {
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف جميع المنتجات ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result == JOptionPane.YES_OPTION) {
+                model.setRowCount(0);
+                setInvoiceTotals();
+                lbInvoiceStatus.setText("تم حذف جميع المنتجات" );
+            }
+                      
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_btnDeleteAllProductsActionPerformed
-
-    private void btnSaveInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveInvoiceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveInvoiceActionPerformed
-
-    private void btnPrintInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintInvoiceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnPrintInvoiceActionPerformed
 
     private void txtFilePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFilePathActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFilePathActionPerformed
 
-    private void btnPrintInvoice1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintInvoice1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnPrintInvoice1ActionPerformed
+    private void txtProductPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductPriceActionPerformed
+        addProductToTable();
+    }//GEN-LAST:event_txtProductPriceActionPerformed
+
+    private void txtTaxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTaxKeyReleased
+        setInvoiceTotals();
+    }//GEN-LAST:event_txtTaxKeyReleased
+
+    private void txtDiscountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDiscountKeyReleased
+        setInvoiceTotals();
+    }//GEN-LAST:event_txtDiscountKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1148,8 +1275,8 @@ public class salesInvoices extends javax.swing.JPanel {
     private javax.swing.JButton btnCustomerSave;
     private javax.swing.JButton btnDeleteAllProducts;
     private javax.swing.JButton btnDeleteProduct;
+    private javax.swing.JButton btnNewInvoice;
     private javax.swing.JButton btnPrintInvoice;
-    private javax.swing.JButton btnPrintInvoice1;
     private javax.swing.JButton btnSaveInvoice;
     private javax.swing.JComboBox<String> cbCustomerName;
     private javax.swing.JComboBox<String> cbInvoicetype;
@@ -1180,8 +1307,8 @@ public class salesInvoices extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1251,6 +1378,101 @@ public class salesInvoices extends javax.swing.JPanel {
 
 
     private void setCbCustomerInvoiceUiData() {
-        
+        try {
+            cbCustomerName.removeAllItems();
+            ArrayList<Customer> list = customerRepo.findAll();
+            for (Customer customer : list) {
+                cbCustomerName.addItem(customer.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void addProductToTable() {
+        try {
+            
+            // validation
+            
+            if(txtProductName.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل اسم الصنف");
+                return;
+            }
+            
+            if(txtProductQty.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل الكمية");
+                return;
+            }
+            
+            if(txtProductPrice.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "ادخل سعر الصنف");
+                return;
+            }
+            
+            String productName = txtProductName.getText();
+            double productQty = Double.valueOf(txtProductQty.getText());
+            double productPrice = Double.valueOf(txtProductPrice.getText());
+            double total = productQty * productPrice;
+            
+            
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            Vector vector = new Vector();
+            vector.add(productName);
+            vector.add(productQty);
+            vector.add(productPrice);
+            vector.add(total);
+            
+            model.addRow(vector);
+            
+            tbProducts.setModel(model);
+            
+            // clear text feilds 
+            txtProductQty.setText("");
+            txtProductPrice.setText("");
+            txtProductName.setText("");
+            
+            // set focus on txtproductname
+            txtProductName.requestFocus();
+            
+            setInvoiceTotals();
+            
+            lbInvoiceStatus.setText("تم اضافة المنتج " + productName);
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void setInvoiceTotals() {
+        try {
+            
+            double tax = Double.valueOf(txtTax.getText());
+            double discount = Double.valueOf(txtDiscount.getText());
+            
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            int rows = model.getRowCount();
+            
+            double productsTotal = 0.00;
+            if(rows > 0) {
+                
+                for (int i = 0; i < rows; i++) {
+                    productsTotal = productsTotal + (double) tbProducts.getValueAt(i, 3);
+                }
+            }
+            
+            double total = productsTotal + tax - discount;
+            
+            lbInvoiceTotal.setText(numberFormater.format(total));
+            lbDiscount.setText(numberFormater.format(discount));
+            lbTax.setText(numberFormater.format(tax));
+            lbProductsTotal.setText(numberFormater.format(productsTotal));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 }
