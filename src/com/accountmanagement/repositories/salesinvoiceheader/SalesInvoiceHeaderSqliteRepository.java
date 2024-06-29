@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRepository{
 
     @Override
-    public boolean save(SalesInvoiceHeader invoiceHeader) {
+    public long save(SalesInvoiceHeader invoiceHeader) {
         String sql = "INSERT INTO tb_sales_invoice_header (Date, CustomerId, Total, IsFileType, FilePath, Tax, Discount, Comment) VALUES (?,?,?,?,?,?,?,?);";
         
         try {
@@ -30,9 +30,13 @@ public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRep
             ps.setString(8, invoiceHeader.getComment());
             
             System.out.println(ps.toString());
-            
+
             if(ps.executeUpdate() == 1) {
-                return true;
+                ResultSet rs = ps.getGeneratedKeys();
+                while(rs.next()) {
+                    return rs.getLong(1);
+                }
+                
             }
             
         } catch (Exception e) {
@@ -40,7 +44,7 @@ public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRep
             JOptionPane.showMessageDialog(null, e);
         }
         
-        return false;
+        return 0;
     }
 
     @Override

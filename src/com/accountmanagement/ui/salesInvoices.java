@@ -1,17 +1,27 @@
 
 package com.accountmanagement.ui;
 
+import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
+import com.accountmanagement.models.SalesInvoiceDetails;
 import com.accountmanagement.models.SalesInvoiceHeader;
 import com.accountmanagement.repositories.sCustomer.ScustomerSqliteRepository;
+import com.accountmanagement.repositories.salesinvoicedetails.SalesInvoiceDetailsSqliteRepository;
+import com.accountmanagement.repositories.salesinvoiceheader.SalesInvoiceHeaderSqliteRepository;
+import com.accountmanagement.utils.Constants;
+import java.awt.BorderLayout;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -19,12 +29,23 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class salesInvoices extends javax.swing.JPanel {
     
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
     DecimalFormat numberFormater =  new DecimalFormat("#,###,###.##");
+    double invoiceTotal = 0.00;
+    
+    String reportsPath = Constants.REPORTS_PATH;
 
     ScustomerSqliteRepository customerRepo = new ScustomerSqliteRepository();
+    SalesInvoiceHeaderSqliteRepository headerRepo = new SalesInvoiceHeaderSqliteRepository();
+    SalesInvoiceDetailsSqliteRepository detailsRepo = new SalesInvoiceDetailsSqliteRepository();
     
     public salesInvoices() {
         initComponents();
@@ -84,6 +105,7 @@ public class salesInvoices extends javax.swing.JPanel {
          public void keyPressed(KeyEvent ke) {
             String value = txtTax.getText();
             int l = value.length();
+            
             if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                txtTax.setEditable(true);
                lbInvoiceStatus.setText("");
@@ -95,6 +117,7 @@ public class salesInvoices extends javax.swing.JPanel {
       });
         
         txtDiscount.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyPressed(KeyEvent ke) {
             String value = txtDiscount.getText();
             int l = value.length();
@@ -109,6 +132,7 @@ public class salesInvoices extends javax.swing.JPanel {
       });
         
         txtProductQty.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyPressed(KeyEvent ke) {
             String value = txtProductQty.getText();
             int l = value.length();
@@ -123,6 +147,7 @@ public class salesInvoices extends javax.swing.JPanel {
       });
         
         txtProductPrice.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyPressed(KeyEvent ke) {
             String value = txtProductPrice.getText();
             int l = value.length();
@@ -135,6 +160,10 @@ public class salesInvoices extends javax.swing.JPanel {
             }
          }
       });
+        
+        // set print button disabled
+        btnPrintInvoice.setEnabled(false);
+        
         
     }
 
@@ -966,11 +995,21 @@ public class salesInvoices extends javax.swing.JPanel {
         btnNewInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/new.png"))); // NOI18N
         btnNewInvoice.setText("فاتورة جديدة");
         btnNewInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+        btnNewInvoice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewInvoiceActionPerformed(evt);
+            }
+        });
 
         btnPrintInvoice.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnPrintInvoice.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/print.png"))); // NOI18N
         btnPrintInvoice.setText("طباعة الفاتورة");
         btnPrintInvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+        btnPrintInvoice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintInvoiceActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1220,6 +1259,12 @@ public class salesInvoices extends javax.swing.JPanel {
     private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
         try {
             DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            
+            if(model.getRowCount() < 1) {
+                JOptionPane.showMessageDialog(null, "اختر منتج اولا");
+                return;
+            }
+            
             int row = tbProducts.getSelectedRow();          
           
             lbInvoiceStatus.setText("تم حذف المنتج " + tbProducts.getValueAt(row, 0));
@@ -1274,6 +1319,26 @@ public class salesInvoices extends javax.swing.JPanel {
     private void btnSaveInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveInvoiceActionPerformed
         saveInvoice();
     }//GEN-LAST:event_btnSaveInvoiceActionPerformed
+
+    private void btnPrintInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintInvoiceActionPerformed
+        long headerId = 0;
+        try {
+            headerId = Long.valueOf(lbInvoiceId.getText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        printInvoice(headerId);
+    }//GEN-LAST:event_btnPrintInvoiceActionPerformed
+
+    private void btnNewInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewInvoiceActionPerformed
+        int result = JOptionPane.showConfirmDialog(null, "هل تريد فتح فاتورة جديدة ؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+        if(result == JOptionPane.YES_OPTION){
+            resetInvoice();
+            btnSaveInvoice.setEnabled(true);
+            btnPrintInvoice.setEnabled(false);
+            lbInvoiceStatus.setText("تم فتح فاتورة جديدة");
+        }
+    }//GEN-LAST:event_btnNewInvoiceActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1474,6 +1539,7 @@ public class salesInvoices extends javax.swing.JPanel {
             }
             
             double total = productsTotal + tax - discount;
+            invoiceTotal = total;
             
             lbInvoiceTotal.setText(numberFormater.format(total));
             lbDiscount.setText(numberFormater.format(discount));
@@ -1488,10 +1554,29 @@ public class salesInvoices extends javax.swing.JPanel {
 
     private void saveInvoice() {
         try {
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            
+            if(model.getRowCount() < 1) {
+                JOptionPane.showMessageDialog(null, "ادخل بعض الاصناف اولا");
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حفظ الفاتورة؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
             // invoice header
             
-            String date = txtInvoicedate.getDate().toString();
+            Date dateBeforeFormat = txtInvoicedate.getDate();
+            String date = df.format(dateBeforeFormat);
+            
             String customerName = cbCustomerName.getSelectedItem().toString();
+            
+            HashMap customersMap = getCustomerHashMap();
+            int customerId = (int) customersMap.get(customerName);
+            
             boolean isFileType;
             String filePath = null;
             
@@ -1505,16 +1590,143 @@ public class salesInvoices extends javax.swing.JPanel {
             double tax = Double.valueOf(txtTax.getText());
             double discount = Double.valueOf(txtDiscount.getText());
             String comment = txtComment.getText();
-            double total = Double.valueOf(lbInvoiceTotal.getText());
             
-//            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
-//                    .date(date)
-//                    .customerId(1)
-//                    .total(total)
-                    
+            
+            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
+                    .date(date)
+                    .customerId(customerId)
+                    .total(invoiceTotal)
+                    .isFileType(isFileType)
+                    .filePath(filePath)
+                    .tax(tax)
+                    .discount(discount)
+                    .comment(comment)
+                    .build();
+            
+            long headerId = headerRepo.save(header);
                     
             
             // invoice details
+            
+            
+            
+            int rowCount = model.getRowCount();
+            
+            for (int i = 0; i < rowCount; i++) {
+                SalesInvoiceDetails details = SalesInvoiceDetails.builder()
+                        .headerId(headerId)
+                        .productName((String) tbProducts.getValueAt(i, 0))
+                        .productQty((double) tbProducts.getValueAt(i, 1))
+                        .productPrice((double) tbProducts.getValueAt(i, 2))
+                        .productTotal((double) tbProducts.getValueAt(i, 3))
+                        .build();
+                
+                detailsRepo.save(details);
+            }
+            
+            resetInvoice();
+            btnPrintInvoice.setEnabled(true);
+            btnSaveInvoice.setEnabled(false);
+            lbInvoiceStatus.setText("تم حفظ الفاتورة بالرقم :" + headerId);
+            lbInvoiceId.setText(String.valueOf(headerId));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    private HashMap<String, Integer> getCustomerHashMap() {
+        ArrayList<Customer> list = customerRepo.findAll();
+        HashMap<String, Integer> map = new HashMap();
+        
+        for (Customer customer : list) {
+            map.put(customer.getName(), customer.getId());
+        }
+        
+        return map;
+    }
+
+    private void printInvoice(long headerId) {
+        try {
+
+            
+            HashMap customersMap = getCustomerHashMap();
+            
+            SalesInvoiceHeader header = headerRepo.findById(headerId);
+            
+            
+            int customerId = header.getCustomerId();
+            Customer customer = customerRepo.findById(customerId);
+            String date = header.getDate();
+            String comment = header.getComment();
+            double total = header.getTotal();
+            double tax = header.getTax();
+            double discount = header.getDiscount();
+            
+            String reportName = reportsPath +"salesInvoice.jasper";
+            
+
+            HashMap map = new HashMap();
+
+            map.put("id", headerId);
+            map.put("date", date);
+            map.put("customerName", customer.getName());
+            map.put("total", total);
+            map.put("tax", tax);
+            map.put("comment", comment);
+            map.put("discount", discount);
+            
+            ArrayList<SalesInvoiceDetails> list = detailsRepo.findByHeaderID(headerId);            
+            
+            InputStream report;
+            report = getClass().getResourceAsStream(reportName);
+            
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(list);
+            
+
+            JasperPrint jPrint = JasperFillManager.fillReport(report, map, ds);
+            
+            JasperViewer.viewReport(jPrint);
+            
+//            JRViewer viewer = new JRViewer(jPrint);
+//            viewer.setZoomRatio(CENTER_ALIGNMENT);
+//            viewer.setVisible(true);
+//            
+//            panelReport.setLayout(new BorderLayout());
+//            panelReport.repaint();
+//            
+//            panelReport.add(viewer);
+//            panelReport.revalidate();
+            
+//            JasperViewer.viewReport(jPrint, false);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e, "Error", 0);
+        }
+    }
+
+    private void resetInvoice() {
+        try {
+            
+            txtInvoicedate.setDate(new Date());
+            cbCustomerName.setSelectedIndex(0);
+            cbInvoicetype.setSelectedIndex(0);
+            txtFilePath.setText("");
+            txtProductName.setText("");
+            txtProductPrice.setText("");
+            txtProductQty.setText("");
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            model.setRowCount(0);
+            lbDiscount.setText("0.00");
+            lbTax.setText("0.00");
+            lbInvoiceTotal.setText("0.00");
+            lbProductsTotal.setText("0.00");
+            txtTax.setText("0.00");
+            txtDiscount.setText("0.00");
+            txtComment.setText("");
+            lbInvoiceId.setText("");
             
         } catch (Exception e) {
             e.printStackTrace();

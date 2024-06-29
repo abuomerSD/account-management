@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface SalesInvoiceHeaderRepository {
     
-    boolean save(SalesInvoiceHeader invoiceHeader);
+    long save(SalesInvoiceHeader invoiceHeader);
     boolean update(SalesInvoiceHeader invoiceHeader);
     boolean delete(long id);
     SalesInvoiceHeader findById(long id);

@@ -58,7 +58,7 @@
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[currencyName]]></text>
+				<text><![CDATA[اسم العملة]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="183" y="41" width="133" height="20"/>
@@ -72,7 +72,7 @@
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[balance]]></text>
+				<text><![CDATA[الرصيد]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
