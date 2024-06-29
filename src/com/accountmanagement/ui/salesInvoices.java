@@ -1672,10 +1672,10 @@ public class salesInvoices extends javax.swing.JPanel {
             map.put("id", headerId);
             map.put("date", date);
             map.put("customerName", customer.getName());
-            map.put("total", total);
-            map.put("tax", tax);
+            map.put("total", numberFormater.format(total));
+            map.put("tax", numberFormater.format(tax));
             map.put("comment", comment);
-            map.put("discount", discount);
+            map.put("discount", numberFormater.format(discount));
             
             ArrayList<SalesInvoiceDetails> list = detailsRepo.findByHeaderID(headerId);            
             
