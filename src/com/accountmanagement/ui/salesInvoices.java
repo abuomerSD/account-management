@@ -1,7 +1,6 @@
 
 package com.accountmanagement.ui;
 
-import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.models.Customer;
 import com.accountmanagement.models.CustomerBuilder;
 import com.accountmanagement.models.SalesInvoiceDetails;
@@ -10,19 +9,26 @@ import com.accountmanagement.repositories.sCustomer.ScustomerSqliteRepository;
 import com.accountmanagement.repositories.salesinvoicedetails.SalesInvoiceDetailsSqliteRepository;
 import com.accountmanagement.repositories.salesinvoiceheader.SalesInvoiceHeaderSqliteRepository;
 import com.accountmanagement.utils.Constants;
-import java.awt.BorderLayout;
-import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.Vector;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -32,7 +38,6 @@ import javax.swing.table.JTableHeader;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.swing.JRViewer;
 import net.sf.jasperreports.view.JasperViewer;
 
 public class salesInvoices extends javax.swing.JPanel {
@@ -160,6 +165,9 @@ public class salesInvoices extends javax.swing.JPanel {
             }
          }
       });
+        
+        
+        
         
         // set print button disabled
         btnPrintInvoice.setEnabled(false);
@@ -596,6 +604,11 @@ public class salesInvoices extends javax.swing.JPanel {
 
         btnChooseFile.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnChooseFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/open-file.png"))); // NOI18N
+        btnChooseFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseFileActionPerformed(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1340,6 +1353,10 @@ public class salesInvoices extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnNewInvoiceActionPerformed
 
+    private void btnChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseFileActionPerformed
+        openFileChooser();
+    }//GEN-LAST:event_btnChooseFileActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
@@ -1556,6 +1573,11 @@ public class salesInvoices extends javax.swing.JPanel {
         try {
             DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
             
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")) {
+                saveInvoiceAsFile();
+                return;
+            }
+            
             if(model.getRowCount() < 1) {
                 JOptionPane.showMessageDialog(null, "ادخل بعض الاصناف اولا");
                 return;
@@ -1689,17 +1711,7 @@ public class salesInvoices extends javax.swing.JPanel {
             
             JasperViewer.viewReport(jPrint);
             
-//            JRViewer viewer = new JRViewer(jPrint);
-//            viewer.setZoomRatio(CENTER_ALIGNMENT);
-//            viewer.setVisible(true);
-//            
-//            panelReport.setLayout(new BorderLayout());
-//            panelReport.repaint();
-//            
-//            panelReport.add(viewer);
-//            panelReport.revalidate();
-            
-//            JasperViewer.viewReport(jPrint, false);
+            lbInvoiceId.setText("تم طباعة فاتورة رقم :" + headerId);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -1731,6 +1743,162 @@ public class salesInvoices extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void saveInvoiceAsFile() {
+        try {
+            
+            
+
+            if(txtFilePath.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر ملف الفاتورة ثم اضفط حفظ");
+                return;
+            }
+            
+            File src = new File(txtFilePath.getText());
+            
+            String extension = "";
+
+            int i = src.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = src.getName().substring(i+1);
+            }
+            
+            String newFileName = UUID.randomUUID().toString() + "." + extension;
+            
+            String distPath = System.getProperty("user.dir") + "/invoices/" + newFileName ;
+            File dist = new File(distPath);
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حفظ الفاتورة؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
+
+            copyFile(src, dist);
+
+            // invoice header
+            
+            Date dateBeforeFormat = txtInvoicedate.getDate();
+            String date = df.format(dateBeforeFormat);
+            
+            String customerName = cbCustomerName.getSelectedItem().toString();
+            
+            HashMap customersMap = getCustomerHashMap();
+            int customerId = (int) customersMap.get(customerName);
+            
+            boolean isFileType;
+            String filePath = null;
+            
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")){
+                isFileType = true;
+                filePath = distPath;
+            } else {
+                isFileType = false;
+            }
+            
+            double tax = 0;
+            double discount = 0;
+            String comment = txtComment.getText();
+            
+            
+            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
+                    .date(date)
+                    .customerId(customerId)
+                    .total(0)
+                    .isFileType(isFileType)
+                    .filePath(filePath)
+                    .tax(tax)
+                    .discount(discount)
+                    .comment(comment)
+                    .build();
+            
+            long headerId = headerRepo.save(header);
+            
+            if(headerId > 0) {
+                lbInvoiceStatus.setText("تم حفظ الفاتورة بالرقم :" + headerId);
+                resetInvoice();
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void openFileChooser() {
+        try {
+//            JFrame frame = new JFrame("اختر ملف");           
+//            frame.setSize(520, 400);                                  
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            JTextArea textArea = new JTextArea();
+//            JScrollPane textAreaScroller = new JScrollPane(textArea);
+//
+//
+//            frame.add(textAreaScroller);
+            
+            JFileChooser chooser = new JFileChooser();
+            
+            int returnedValue = chooser.showOpenDialog(this);
+            
+            if(returnedValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = chooser.getSelectedFile();
+                String filepath = selectedFile.getPath();
+                
+//                System.out.println(selectedFile.getName());
+//                System.out.println(filepath);
+                txtFilePath.setText(filepath);
+            }
+           
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+//    private void copyFile(Path src, Path dist) throws FileNotFoundException, IOException {
+//        
+////        FileInputStream in = null;
+////        FileOutputStream out = null;
+////        
+////        try {
+////            in = new FileInputStream(src);
+////            out = new FileOutputStream(dist);
+////            
+////            int c;
+//// 
+////            while ((c = in.read()) != -1) {
+////                out.write(c);
+////            }
+////            
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////            JOptionPane.showMessageDialog(null, e);
+////        }
+////        finally {
+////            if (in != null) {
+////                in.close();
+////            }
+////            if (out != null) {
+////                out.close();
+////            }
+////        }
+//
+//        Files.copy(src, dist, StandardCopyOption.REPLACE_EXISTING);
+//        
+//    }
+
+    private void copyFile(File src, File dist) {
+
+            try {
+            src.renameTo(dist);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
