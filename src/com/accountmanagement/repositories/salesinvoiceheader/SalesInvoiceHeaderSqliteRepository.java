@@ -150,6 +150,77 @@ public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRep
             
             while(rs.next()){
                 SalesInvoiceHeader invoiceHeader = SalesInvoiceHeader.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .total(rs.getDouble("Total"))
+                        .isFileType(rs.getBoolean("IsFileType"))
+                        .filePath(rs.getString("FilePath"))
+                        .tax(rs.getDouble("Tax"))
+                        .discount(rs.getDouble("Discount"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                
+                list.add(invoiceHeader);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        return list;
+    }
+    
+    @Override
+    public ArrayList<SalesInvoiceHeader> findAllDesc() {
+        ArrayList<SalesInvoiceHeader> list = new ArrayList<>();
+        String sql = "SELECT * FROM tb_sales_invoice_header  ORDER BY Id DESC";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            
+            while(rs.next()){
+                SalesInvoiceHeader invoiceHeader = SalesInvoiceHeader.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .total(rs.getDouble("Total"))
+                        .isFileType(rs.getBoolean("IsFileType"))
+                        .filePath(rs.getString("FilePath"))
+                        .tax(rs.getDouble("Tax"))
+                        .discount(rs.getDouble("Discount"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                
+                list.add(invoiceHeader);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        return list;
+    }
+
+    @Override
+    public ArrayList<SalesInvoiceHeader> findAllBySearchWords(long id, int customerId, String date, boolean isFileType) {
+        ArrayList<SalesInvoiceHeader> list = new ArrayList<>();
+        String sql = "SELECT * FROM tb_sales_invoice_header  WHERE Id LIKE '%" + id + "%' "
+                + "AND CustomerId LIKE '%" + customerId + "%' "
+                + "AND Date LIKE '%" + date + "%' "
+                + "AND IsFileType LIKE '%" + isFileType + "%' ;";
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            System.out.println(sql);
+            ResultSet rs = st.executeQuery(sql);
+            
+            while(rs.next()){
+                SalesInvoiceHeader invoiceHeader = SalesInvoiceHeader.builder()
+                        .id(rs.getLong("Id"))
                         .date(rs.getString("Date"))
                         .customerId(rs.getInt("CustomerId"))
                         .total(rs.getDouble("Total"))
