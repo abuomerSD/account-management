@@ -67,7 +67,7 @@ public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRep
             
             System.out.println(ps.toString());
             
-            if(ps.executeUpdate() == 1) {
+            if(ps.executeUpdate() > 0 ) {
                 return true;
             }
             

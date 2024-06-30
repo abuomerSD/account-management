@@ -83,6 +83,11 @@ public class Login extends javax.swing.JFrame {
         jLabel3.setText("كلمة السر :");
 
         txtPassword.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -145,63 +150,23 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUsernameActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        try {
-            String username = txtUsername.getText();
-            String password = txtPassword.getText();
-
-            
-            if(username.isEmpty()){
-                JOptionPane.showMessageDialog(null, "ادخل اسم المستخدم");
-                return;
-            }
-            
-            if(password.isEmpty()){
-                JOptionPane.showMessageDialog(null, "ادخل كلمة السر");
-                return;
-            }
-            
-            if(username.equals(Constants.ADMIN_USER_NAME) && password.equals(Constants.ADMIN_PASSWORD)) {
-                
-                Home home = new Home();
-                home.setExtendedState(home.MAXIMIZED_BOTH);
-                home.setVisible(true);
-                home.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                this.setVisible(false);
-
-                WindowListener listener = new WindowAdapter() {
-                    @Override 
-                    public void windowClosing(WindowEvent we) {
-
-                        closeDbConnection();
-                        home.setVisible(false);
-                        home.dispose();
-
-                    }
-                };
-
-
-                home.addWindowListener(listener);
-                
-            } else {
-                JOptionPane.showMessageDialog(null, "خطأ في اسم المستخدم او كلمة السر", "خطأ", JOptionPane.ERROR_MESSAGE);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, e);
-        }
+        login();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         try {
             this.setVisible(false);
             this.dispose();
-            
+            closeDbConnection();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        login();
+    }//GEN-LAST:event_txtPasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,4 +228,52 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
+
+    private void login() {
+        try {
+            String username = txtUsername.getText();
+            String password = txtPassword.getText();
+
+            
+            if(username.isEmpty()){
+                JOptionPane.showMessageDialog(null, "ادخل اسم المستخدم");
+                return;
+            }
+            
+            if(password.isEmpty()){
+                JOptionPane.showMessageDialog(null, "ادخل كلمة السر");
+                return;
+            }
+            
+            if(username.equals(Constants.ADMIN_USER_NAME) && password.equals(Constants.ADMIN_PASSWORD)) {
+                
+                Home home = new Home();
+                home.setExtendedState(home.MAXIMIZED_BOTH);
+                home.setVisible(true);
+                home.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                this.setVisible(false);
+
+                WindowListener listener = new WindowAdapter() {
+                    @Override 
+                    public void windowClosing(WindowEvent we) {
+
+                        closeDbConnection();
+                        home.setVisible(false);
+                        home.dispose();
+
+                    }
+                };
+
+
+                home.addWindowListener(listener);
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "خطأ في اسم المستخدم او كلمة السر", "خطأ", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
 }

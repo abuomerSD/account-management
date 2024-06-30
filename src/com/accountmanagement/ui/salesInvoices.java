@@ -13,10 +13,14 @@ import com.accountmanagement.utils.OSDetector;
 import java.awt.ComponentOrientation;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,6 +51,8 @@ public class salesInvoices extends javax.swing.JPanel {
     SimpleDateFormat df = new SimpleDateFormat("dd-MMMM-yyyy");
     DecimalFormat numberFormater =  new DecimalFormat("#,###,###.##");
     double invoiceTotal = 0.00;
+    
+    boolean isUpdateInvoice = false;
     
     String reportsPath = Constants.REPORTS_PATH;
 
@@ -1283,6 +1289,11 @@ public class salesInvoices extends javax.swing.JPanel {
         btn_il_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/edit.png"))); // NOI18N
         btn_il_edit.setText("تعديل");
         btn_il_edit.setPreferredSize(new java.awt.Dimension(100, 30));
+        btn_il_edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_il_editActionPerformed(evt);
+            }
+        });
 
         btn_il_delete.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btn_il_delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
@@ -1576,7 +1587,11 @@ public class salesInvoices extends javax.swing.JPanel {
     }//GEN-LAST:event_txtDiscountKeyReleased
 
     private void btnSaveInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveInvoiceActionPerformed
-        saveInvoice();
+        if(!isUpdateInvoice) {
+            saveInvoice();
+        } else {
+            updateInvoice();
+        }
     }//GEN-LAST:event_btnSaveInvoiceActionPerformed
 
     private void btnPrintInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintInvoiceActionPerformed
@@ -1596,6 +1611,8 @@ public class salesInvoices extends javax.swing.JPanel {
             btnSaveInvoice.setEnabled(true);
             btnPrintInvoice.setEnabled(false);
             lbInvoiceStatus.setText("تم فتح فاتورة جديدة");
+            isUpdateInvoice = false;
+            enableInvoiceControls();
         }
     }//GEN-LAST:event_btnNewInvoiceActionPerformed
 
@@ -1681,6 +1698,70 @@ public class salesInvoices extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_btn_il_deleteActionPerformed
+
+    private void btn_il_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_il_editActionPerformed
+        try {
+            
+            int row = tbInvoicesList.getSelectedRow();
+            
+            if(row == -1) {
+                JOptionPane.showMessageDialog(null, "اختر فاتورة اولا");
+                return;
+            }
+            
+            jTabbedPane1.setSelectedIndex(1);
+            
+            resetInvoice();
+            enableInvoiceControls();
+            
+            long id = (long) tbInvoicesList.getValueAt(row, 0);
+            
+            SalesInvoiceHeader header = headerRepo.findById(id);
+            ArrayList<SalesInvoiceDetails> details = detailsRepo.findByHeaderID(id);
+            
+            txtInvoicedate.setDate(new Date(header.getDate()));
+            Customer customer = customerRepo.findById(header.getCustomerId());
+            cbCustomerName.setSelectedItem(customer.getName());
+            txtFilePath.setText(header.getFilePath());
+            lbInvoiceId.setText(String.valueOf(id));
+            
+            String type = "";
+            
+            if(header.isIsFileType()) {
+                type = "من ملف";
+            } else {
+                type = "عادية";
+            }
+            cbInvoicetype.setSelectedItem(type);
+            
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            model.setRowCount(0);
+            
+            for (SalesInvoiceDetails detail : details) {
+                Vector vector = new Vector();
+                vector.add(detail.getProductName());
+                vector.add(detail.getProductQty());
+                vector.add(detail.getProductPrice());
+                vector.add(detail.getProductTotal());
+                
+                model.addRow(vector);
+            }
+            tbProducts.setModel(model);
+            
+            txtTax.setText(String.valueOf(header.getTax()));
+            txtDiscount.setText(String.valueOf(header.getDiscount()));
+            txtComment.setText(header.getComment());
+            
+            setInvoiceTotals();
+            isUpdateInvoice = true;
+            btnSaveInvoice.setEnabled(true);
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_btn_il_editActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1992,6 +2073,7 @@ public class salesInvoices extends javax.swing.JPanel {
             lbInvoiceStatus.setText("تم حفظ الفاتورة بالرقم :" + headerId);
             lbInvoiceId.setText(String.valueOf(headerId));
             setInvoicesListTableDate();
+            disableInvoiceControls();
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -2428,5 +2510,216 @@ public class salesInvoices extends javax.swing.JPanel {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    private void updateInvoice() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbProducts.getModel();
+            
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")) {
+//                saveInvoiceAsFile();
+                updateInvoiceAsFile();
+                return;
+            }
+            
+            if(model.getRowCount() < 1) {
+                JOptionPane.showMessageDialog(null, "ادخل بعض الاصناف اولا");
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حفظ الفاتورة؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
+            // invoice header
+            
+            Date dateBeforeFormat = txtInvoicedate.getDate();
+            String date = df.format(dateBeforeFormat);
+            
+            String customerName = cbCustomerName.getSelectedItem().toString();
+            
+            HashMap customersMap = getCustomerHashMap();
+            int customerId = (int) customersMap.get(customerName);
+            
+            boolean isFileType;
+            String filePath = null;
+            
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")){
+                isFileType = true;
+                filePath = txtFilePath.getText();
+            } else {
+                isFileType = false;
+            }
+            
+            double tax = Double.valueOf(txtTax.getText());
+            double discount = Double.valueOf(txtDiscount.getText());
+            String comment = txtComment.getText();
+            long headerId = Long.valueOf(lbInvoiceId.getText());
+            
+            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
+                    .id(headerId)
+                    .date(date)
+                    .customerId(customerId)
+                    .total(invoiceTotal)
+                    .isFileType(isFileType)
+                    .filePath(filePath)
+                    .tax(tax)
+                    .discount(discount)
+                    .comment(comment)
+                    .build();
+            
+            headerRepo.update(header);
+            
+            
+            // invoice details
+            
+            // delete all previous details
+            
+            detailsRepo.delete(headerId);
+            
+            int rowCount = model.getRowCount();
+            
+            for (int i = 0; i < rowCount; i++) {
+                SalesInvoiceDetails details = SalesInvoiceDetails.builder()
+                        .headerId(headerId)
+                        .productName((String) tbProducts.getValueAt(i, 0))
+                        .productQty((double) tbProducts.getValueAt(i, 1))
+                        .productPrice((double) tbProducts.getValueAt(i, 2))
+                        .productTotal((double) tbProducts.getValueAt(i, 3))
+                        .build();
+                
+                detailsRepo.save(details);
+            }
+            
+            resetInvoice();
+            btnPrintInvoice.setEnabled(true);
+            btnSaveInvoice.setEnabled(false);
+            lbInvoiceStatus.setText("تم حفظ الفاتورة بالرقم :" + headerId);
+            lbInvoiceId.setText(String.valueOf(headerId));
+            setInvoicesListTableDate();
+            disableInvoiceControls();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void updateInvoiceAsFile() {
+        try {
+            
+            long headerId = Long.valueOf(lbInvoiceId.getText());
+
+            if(txtFilePath.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "اختر ملف الفاتورة ثم اضفط حفظ");
+                return;
+            }
+            
+            File src = new File(txtFilePath.getText());
+            
+            String extension = "";
+
+            int i = src.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = src.getName().substring(i+1);
+            }
+            
+            String newFileName = UUID.randomUUID().toString() + "." + extension;
+            
+            String distPath = System.getProperty("user.dir") + "/invoices/" + newFileName ;
+            File dist = new File(distPath);
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حفظ الفاتورة؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
+
+            copyFile(src, dist);
+
+            // invoice header
+            
+            Date dateBeforeFormat = txtInvoicedate.getDate();
+            String date = df.format(dateBeforeFormat);
+            
+            String customerName = cbCustomerName.getSelectedItem().toString();
+            
+            HashMap customersMap = getCustomerHashMap();
+            int customerId = (int) customersMap.get(customerName);
+            
+            boolean isFileType;
+            String filePath = null;
+            
+            if(cbInvoicetype.getSelectedItem().toString().equals("من ملف")){
+                isFileType = true;
+                filePath = distPath;
+            } else {
+                isFileType = false;
+            }
+            
+            double tax = 0;
+            double discount = 0;
+            String comment = txtComment.getText();
+            
+            
+            SalesInvoiceHeader header = SalesInvoiceHeader.builder()
+                    .id(headerId)
+                    .date(date)
+                    .customerId(customerId)
+                    .total(0)
+                    .isFileType(isFileType)
+                    .filePath(filePath)
+                    .tax(tax)
+                    .discount(discount)
+                    .comment(comment)
+                    .build();
+            
+            boolean result1 = headerRepo.update(header);
+            
+            if(result1) {
+                lbInvoiceStatus.setText("تم تعديل الفاتورة  :");
+                resetInvoice();
+                setInvoicesListTableDate();
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void enableInvoiceControls() {
+        txtInvoicedate.setEnabled(true);
+        cbCustomerName.setEnabled(true);
+        btnChooseFile.setEnabled(true);
+        cbInvoicetype.setEnabled(true);
+        txtProductName.setEnabled(true);
+        txtProductPrice.setEnabled(true);
+        txtProductQty.setEnabled(true);
+        btnAddProduct.setEnabled(true);
+        btnDeleteProduct.setEnabled(true);
+        btnDeleteAllProducts.setEnabled(true);
+        txtTax.setEnabled(true);
+        txtDiscount.setEnabled(true);
+        txtComment.setEnabled(true);
+    }
+    private void disableInvoiceControls() {
+        txtInvoicedate.setEnabled(false);
+        cbCustomerName.setEnabled(false);
+        btnChooseFile.setEnabled(false);
+        cbInvoicetype.setEnabled(false);
+        txtProductName.setEnabled(false);
+        txtProductPrice.setEnabled(false);
+        txtProductQty.setEnabled(false);
+        btnAddProduct.setEnabled(false);
+        btnDeleteProduct.setEnabled(false);
+        btnDeleteAllProducts.setEnabled(false);
+        txtTax.setEnabled(false);
+        txtDiscount.setEnabled(false);
+        txtComment.setEnabled(false);
     }
 }
