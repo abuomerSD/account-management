@@ -9,7 +9,9 @@ import com.accountmanagement.repositories.sCustomer.ScustomerSqliteRepository;
 import com.accountmanagement.repositories.salesinvoicedetails.SalesInvoiceDetailsSqliteRepository;
 import com.accountmanagement.repositories.salesinvoiceheader.SalesInvoiceHeaderSqliteRepository;
 import com.accountmanagement.utils.Constants;
+import com.accountmanagement.utils.OSDetector;
 import java.awt.ComponentOrientation;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -1286,6 +1288,11 @@ public class salesInvoices extends javax.swing.JPanel {
         btn_il_delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/delete.png"))); // NOI18N
         btn_il_delete.setText("حذف");
         btn_il_delete.setPreferredSize(new java.awt.Dimension(100, 30));
+        btn_il_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_il_deleteActionPerformed(evt);
+            }
+        });
 
         btn_il_print.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btn_il_print.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/print.png"))); // NOI18N
@@ -1609,8 +1616,10 @@ public class salesInvoices extends javax.swing.JPanel {
             String filePath = tbInvoicesList.getValueAt(row, 8).toString();
             long id = (long) tbInvoicesList.getValueAt(row, 0);
             
+            File file = new File(filePath);
+            
             if(type.equals("من ملف")){
-                showInvoiceFile(filePath);
+                showInvoiceFile(file);
             } else {
                 printInvoice(id);
             }
@@ -1634,6 +1643,44 @@ public class salesInvoices extends javax.swing.JPanel {
         }
         
     }//GEN-LAST:event_txtSearchIdKeyReleased
+
+    private void btn_il_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_il_deleteActionPerformed
+        try{
+            int row = tbInvoicesList.getSelectedRow();
+            String type = tbInvoicesList.getValueAt(row, 7).toString();
+            
+            if(row == -1) {
+                JOptionPane.showMessageDialog(null, "اختر الفاتورة اولا");
+                return;
+            }
+            
+            long id = (long) tbInvoicesList.getValueAt(row, 0);
+            
+            int result = JOptionPane.showConfirmDialog(null, "هل تريد حذف الفاتورة رقم " + id + "؟", "تأكيد", JOptionPane.YES_NO_OPTION);
+            
+            if(result != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
+            if(type.equals("من ملف"))   {
+                if(headerRepo.delete(id)) {
+                    JOptionPane.showMessageDialog(null, "تم حذف الفاتورة رقم " + id);
+                    setInvoicesListTableDate();
+                }
+            } else {
+                if(headerRepo.delete(id) && detailsRepo.delete(id)) {
+                JOptionPane.showMessageDialog(null, "تم حذف الفاتورة رقم " + id);
+                setInvoicesListTableDate();
+            }
+            }
+            
+            
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_btn_il_deleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2310,8 +2357,36 @@ public class salesInvoices extends javax.swing.JPanel {
         }
     }
 
-    private void showInvoiceFile(String filePath) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void showInvoiceFile(File file) {
+        try {
+            if (OSDetector.isWindows())
+        {
+            Runtime.getRuntime().exec(new String[]
+            {"rundll32", "url.dll,FileProtocolHandler",
+             file.getAbsolutePath()});
+//            return true;
+        } else if (OSDetector.isLinux() || OSDetector.isMac())
+        {
+            Runtime.getRuntime().exec(new String[]{"/usr/bin/open",
+                                                   file.getAbsolutePath()});
+//            return true;
+        } else
+        {
+            // Unknown OS, try with desktop
+            if (Desktop.isDesktopSupported())
+            {
+                Desktop.getDesktop().open(file);
+//                return true;
+            }
+            else
+            {
+//                return false;
+            }
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
 
