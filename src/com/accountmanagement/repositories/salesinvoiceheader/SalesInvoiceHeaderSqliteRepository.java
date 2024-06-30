@@ -205,12 +205,47 @@ public class SalesInvoiceHeaderSqliteRepository implements SalesInvoiceHeaderRep
     }
 
     @Override
-    public ArrayList<SalesInvoiceHeader> findAllBySearchWords(long id, int customerId, String date, boolean isFileType) {
+    public ArrayList<SalesInvoiceHeader> findAllBySearchWords(String customerId, String isFileType) {
         ArrayList<SalesInvoiceHeader> list = new ArrayList<>();
-        String sql = "SELECT * FROM tb_sales_invoice_header  WHERE Id LIKE '%" + id + "%' "
-                + "AND CustomerId LIKE '%" + customerId + "%' "
-                + "AND Date LIKE '%" + date + "%' "
+        String sql = "SELECT * FROM tb_sales_invoice_header  WHERE CustomerId LIKE '%" + customerId + "%' "
                 + "AND IsFileType LIKE '%" + isFileType + "%' ;";
+                
+        
+        try {
+            Connection con = DbConnection.getConnection();
+            Statement st = con.createStatement();
+            System.out.println(sql);
+            ResultSet rs = st.executeQuery(sql);
+            
+            while(rs.next()){
+                SalesInvoiceHeader invoiceHeader = SalesInvoiceHeader.builder()
+                        .id(rs.getLong("Id"))
+                        .date(rs.getString("Date"))
+                        .customerId(rs.getInt("CustomerId"))
+                        .total(rs.getDouble("Total"))
+                        .isFileType(rs.getBoolean("IsFileType"))
+                        .filePath(rs.getString("FilePath"))
+                        .tax(rs.getDouble("Tax"))
+                        .discount(rs.getDouble("Discount"))
+                        .comment(rs.getString("Comment"))
+                        .build();
+                
+                list.add(invoiceHeader);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        return list;
+    }
+
+    @Override
+    public ArrayList<SalesInvoiceHeader> findAllById(String id) {
+        ArrayList<SalesInvoiceHeader> list = new ArrayList<>();
+        String sql = "SELECT * FROM tb_sales_invoice_header  WHERE Id LIKE '%" + id + "%' ;";
+                
+                
         
         try {
             Connection con = DbConnection.getConnection();

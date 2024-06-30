@@ -1479,7 +1479,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
+                      <Component id="jPanel13" min="-2" pref="89" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel16" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -1502,29 +1502,27 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel20" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
+                              <Component id="cbSearchInvoiceType" alignment="1" min="-2" pref="199" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" attributes="0">
-                                  <Component id="jLabel20" min="-2" pref="97" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="106" max="-2" attributes="0"/>
+                                  <Component id="jLabel21" min="-2" pref="97" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                                   <Component id="jLabel19" min="-2" pref="97" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="cbSearchInvoiceType" min="-2" pref="150" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="cbSearchCustomerName" min="-2" pref="200" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cbSearchCustomerName" min="-2" pref="150" max="-2" attributes="0"/>
+                                  <Component id="txtSearchId" min="-2" pref="148" max="-2" attributes="0"/>
                               </Group>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtSearchDate" alignment="1" min="-2" pref="150" max="-2" attributes="0"/>
-                              <Component id="jLabel15" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtSearchId" alignment="1" min="-2" pref="150" max="-2" attributes="0"/>
-                              <Component id="jLabel4" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -1532,73 +1530,38 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel4" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
-                              <Component id="jLabel15" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
-                              <Component id="jLabel19" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
-                              <Component id="jLabel20" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel19" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
+                                      <Component id="jLabel20" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
+                                      <Component id="jLabel21" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="cbSearchInvoiceType" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                                      <Component id="cbSearchCustomerName" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                                      <Component id="txtSearchId" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Component id="jButton1" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txtSearchId" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                              <Component id="txtSearchDate" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                              <Component id="cbSearchInvoiceType" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                              <Component id="cbSearchCustomerName" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jLabel4">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Lucida Grande" size="14" style="1"/>
-                    </Property>
-                    <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="&#x627;&#x644;&#x631;&#x642;&#x645; :"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="txtSearchId">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Lucida Grande" size="14" style="1"/>
-                    </Property>
-                    <Property name="horizontalAlignment" type="int" value="4"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchIdKeyReleased"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel15">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Lucida Grande" size="14" style="1"/>
-                    </Property>
-                    <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="&#x627;&#x644;&#x62a;&#x627;&#x631;&#x64a;&#x62e; :"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="txtSearchDate">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Lucida Grande" size="14" style="1"/>
-                    </Property>
-                    <Property name="horizontalAlignment" type="int" value="4"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchDateKeyReleased"/>
-                  </Events>
-                </Component>
                 <Component class="javax.swing.JLabel" name="jLabel19">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Lucida Grande" size="14" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="&#x627;&#x633;&#x645; &#x627;&#x644;&#x639;&#x645;&#x64a;&#x644; :"/>
+                    <Property name="text" type="java.lang.String" value="&#x631;&#x642;&#x645; &#x627;&#x644;&#x641;&#x627;&#x62a;&#x648;&#x631;&#x629; :"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel20">
@@ -1639,6 +1602,36 @@
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
+                <Component class="javax.swing.JButton" name="jButton1">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/com/accountmanagement/ui/images/reload.png"/>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel21">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Lucida Grande" size="14" style="1"/>
+                    </Property>
+                    <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="text" type="java.lang.String" value="&#x627;&#x633;&#x645; &#x627;&#x644;&#x639;&#x645;&#x64a;&#x644; :"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="txtSearchId">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Lucida Grande" size="14" style="1"/>
+                    </Property>
+                    <Property name="horizontalAlignment" type="int" value="4"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchIdKeyReleased"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel16">
@@ -1664,7 +1657,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane3" pref="434" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="435" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -1696,8 +1689,11 @@
                             <Column editable="true" title="&#x645;&#x633;&#x627;&#x631; &#x627;&#x644;&#x645;&#x644;&#x641;" type="java.lang.Object"/>
                           </Table>
                         </Property>
+                        <Property name="gridColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="66" green="66" red="66" type="rgb"/>
+                        </Property>
                         <Property name="rowHeight" type="int" value="30"/>
-                        <Property name="showGrid" type="boolean" value="true"/>
+                        <Property name="showGrid" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                   </SubComponents>

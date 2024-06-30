@@ -12,7 +12,8 @@ public interface SalesInvoiceHeaderRepository {
     boolean delete(long id);
     SalesInvoiceHeader findById(long id);
     ArrayList<SalesInvoiceHeader> findAll();
-    ArrayList<SalesInvoiceHeader> findAllBySearchWords(long id, int customerId, String date, boolean isFileType);
-    ArrayList<SalesInvoiceHeader> findAllDesc();
+    ArrayList<SalesInvoiceHeader> findAllBySearchWords(String customerId, String isFileType);
+    ArrayList<SalesInvoiceHeader> findAllById(String id);
+    ArrayList<SalesInvoiceHeader> findAllDesc(); 
     
 }
