@@ -14,12 +14,13 @@ import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -1861,44 +1862,45 @@ public class salesInvoices extends javax.swing.JPanel {
         }
     }
 
-//    private void copyFile(Path src, Path dist) throws FileNotFoundException, IOException {
-//        
-////        FileInputStream in = null;
-////        FileOutputStream out = null;
-////        
-////        try {
-////            in = new FileInputStream(src);
-////            out = new FileOutputStream(dist);
-////            
-////            int c;
-//// 
-////            while ((c = in.read()) != -1) {
-////                out.write(c);
-////            }
-////            
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////            JOptionPane.showMessageDialog(null, e);
-////        }
-////        finally {
-////            if (in != null) {
-////                in.close();
-////            }
-////            if (out != null) {
-////                out.close();
-////            }
-////        }
-//
-//        Files.copy(src, dist, StandardCopyOption.REPLACE_EXISTING);
-//        
-//    }
-
-    private void copyFile(File src, File dist) {
-
-            try {
-            src.renameTo(dist);
+    private void copyFile(File src, File dist) throws FileNotFoundException, IOException {
+        
+        FileInputStream in = null;
+        FileOutputStream out = null;
+        
+        try {
+            in = new FileInputStream(src);
+            out = new FileOutputStream(dist);
+            
+            int c;
+ 
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e);
         }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }
+
+//        Files.copy(src, dist, StandardCopyOption.REPLACE_EXISTING);
+        
     }
+
+//    private void copyFile(File src, File dist) {
+//
+//            try {
+//            src.renameTo(dist);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(null, e);
+//        }
+//    }
 }
