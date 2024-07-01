@@ -128,65 +128,65 @@ public class salesInvoices extends javax.swing.JPanel {
         
         // add numbers only for textfeilds
         
-        txtTax.addKeyListener(new KeyAdapter() {
-         public void keyPressed(KeyEvent ke) {
-            String value = txtTax.getText();
-            int l = value.length();
-            
-            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
-               txtTax.setEditable(true);
-               lbInvoiceStatus.setText("");
-            } else {
-               txtTax.setEditable(false);
-               lbInvoiceStatus.setText("ادخل ارقام فقط");
-            }
-         }
-      });
-        
-        txtDiscount.addKeyListener(new KeyAdapter() {
-         @Override
-         public void keyPressed(KeyEvent ke) {
-            String value = txtDiscount.getText();
-            int l = value.length();
-            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
-               txtDiscount.setEditable(true);
-               lbInvoiceStatus.setText("");
-            } else {
-               txtDiscount.setEditable(false);
-               lbInvoiceStatus.setText("ادخل ارقام فقط");
-            }
-         }
-      });
-        
-        txtProductQty.addKeyListener(new KeyAdapter() {
-         @Override
-         public void keyPressed(KeyEvent ke) {
-            String value = txtProductQty.getText();
-            int l = value.length();
-            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
-               txtProductQty.setEditable(true);
-               lbInvoiceStatus.setText("");
-            } else {
-               txtProductQty.setEditable(false);
-               lbInvoiceStatus.setText("ادخل ارقام فقط");
-            }
-         }
-      });
-        
-        txtProductPrice.addKeyListener(new KeyAdapter() {
-         @Override
-         public void keyPressed(KeyEvent ke) {
-            String value = txtProductPrice.getText();
-            int l = value.length();
-            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
-               txtProductPrice.setEditable(true);
-               lbInvoiceStatus.setText("");
-            } else {
-               txtProductPrice.setEditable(false);
-               lbInvoiceStatus.setText("ادخل ارقام فقط");
-            }
-         }
-      });
+//        txtTax.addKeyListener(new KeyAdapter() {
+//         public void keyPressed(KeyEvent ke) {
+//            String value = txtTax.getText();
+//            int l = value.length();
+//            
+//            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+//               txtTax.setEditable(true);
+//               lbInvoiceStatus.setText("");
+//            } else {
+//               txtTax.setEditable(false);
+//               lbInvoiceStatus.setText("ادخل ارقام فقط");
+//            }
+//         }
+//      });
+//        
+//        txtDiscount.addKeyListener(new KeyAdapter() {
+//         @Override
+//         public void keyPressed(KeyEvent ke) {
+//            String value = txtDiscount.getText();
+//            int l = value.length();
+//            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+//               txtDiscount.setEditable(true);
+//               lbInvoiceStatus.setText("");
+//            } else {
+//               txtDiscount.setEditable(false);
+//               lbInvoiceStatus.setText("ادخل ارقام فقط");
+//            }
+//         }
+//      });
+//        
+//        txtProductQty.addKeyListener(new KeyAdapter() {
+//         @Override
+//         public void keyPressed(KeyEvent ke) {
+//            String value = txtProductQty.getText();
+//            int l = value.length();
+//            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+//               txtProductQty.setEditable(true);
+//               lbInvoiceStatus.setText("");
+//            } else {
+//               txtProductQty.setEditable(false);
+//               lbInvoiceStatus.setText("ادخل ارقام فقط");
+//            }
+//         }
+//      });
+//        
+//        txtProductPrice.addKeyListener(new KeyAdapter() {
+//         @Override
+//         public void keyPressed(KeyEvent ke) {
+//            String value = txtProductPrice.getText();
+//            int l = value.length();
+//            if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+//               txtProductPrice.setEditable(true);
+//               lbInvoiceStatus.setText("");
+//            } else {
+//               txtProductPrice.setEditable(false);
+//               lbInvoiceStatus.setText("ادخل ارقام فقط");
+//            }
+//         }
+//      });
         
 //        txtSearchId.addKeyListener(new KeyAdapter() {
 //         @Override
@@ -2047,7 +2047,7 @@ public class salesInvoices extends javax.swing.JPanel {
                     .build();
             
             long headerId = headerRepo.save(header);
-                    
+            lbInvoiceStatus.setText("جاري حفظ الفاتورة ...");
             
             // invoice details
             
@@ -2238,12 +2238,16 @@ public class salesInvoices extends javax.swing.JPanel {
                     .comment(comment)
                     .build();
             
+            lbInvoiceStatus.setText("جاري حفظ الفاتورة ...");
+            
             long headerId = headerRepo.save(header);
             
             if(headerId > 0) {
                 lbInvoiceStatus.setText("تم حفظ الفاتورة بالرقم :" + headerId);
                 resetInvoice();
                 setInvoicesListTableDate();
+                disableInvoiceControls();
+                btnSaveInvoice.setEnabled(false);
             }
             
             
@@ -2294,10 +2298,14 @@ public class salesInvoices extends javax.swing.JPanel {
             in = new FileInputStream(src);
             out = new FileOutputStream(dist);
             
+            
+            
             int c;
- 
+            
             while ((c = in.read()) != -1) {
+                
                 out.write(c);
+                System.out.println(c);
             }
             
         } catch (Exception e) {
@@ -2312,20 +2320,10 @@ public class salesInvoices extends javax.swing.JPanel {
                 out.close();
             }
         }
-
-//        Files.copy(src, dist, StandardCopyOption.REPLACE_EXISTING);
         
     }
 
-//    private void copyFile(File src, File dist) {
-//
-//            try {
-//            src.renameTo(dist);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(null, e);
-//        }
-//    }
+
 
     private void setInvoicesListTableDate() {
         try {
@@ -2570,6 +2568,8 @@ public class salesInvoices extends javax.swing.JPanel {
                     .comment(comment)
                     .build();
             
+            lbInvoiceStatus.setText("جاري حفظ الفاتورة ...");
+            
             headerRepo.update(header);
             
             
@@ -2677,10 +2677,12 @@ public class salesInvoices extends javax.swing.JPanel {
                     .comment(comment)
                     .build();
             
+            lbInvoiceStatus.setText("جاري حفظ الفاتورة ...");
+            
             boolean result1 = headerRepo.update(header);
             
             if(result1) {
-                lbInvoiceStatus.setText("تم تعديل الفاتورة  :");
+                lbInvoiceStatus.setText("تم تعديل الفاتورة  :" + headerId);
                 resetInvoice();
                 setInvoicesListTableDate();
             }

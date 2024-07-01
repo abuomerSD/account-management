@@ -4,6 +4,7 @@ import com.accountmanagement.database.DatabaseTablesCreator;
 import com.accountmanagement.models.AccountMovement;
 import com.accountmanagement.repositories.accountmovement.AccountMovementSqliteRepository;
 import com.accountmanagement.ui.Login;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -15,10 +16,14 @@ public class Main {
             // create Database Tables 
             DatabaseTablesCreator.createDbTables();
             
+            // flatlaf look and feel
+            
+            FlatLightLaf.setup();
+            
             // check if the app activated
             
             if(!isActivated()){
-                JOptionPane.showMessageDialog(null, "انتهت المدة التجريبية");
+                JOptionPane.showMessageDialog(null, "يرجى تحديث النظام");
                 return;
             } 
             
@@ -28,7 +33,7 @@ public class Main {
                      
                         
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, e);
         }
    
     }
@@ -43,7 +48,7 @@ public class Main {
             
             if(activated == false){
                 
-                if(list.size() > 50) {                    
+                if(list.size() > 100) {                    
                     return activated;
                 }
             }
