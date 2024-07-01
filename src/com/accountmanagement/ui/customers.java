@@ -649,7 +649,6 @@ public class customers extends javax.swing.JPanel {
 
         btnClearCutomerSelection.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClearCutomerSelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearCutomerSelection.setText("إزالة تحديد");
         btnClearCutomerSelection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearCutomerSelectionActionPerformed(evt);
@@ -858,7 +857,7 @@ public class customers extends javax.swing.JPanel {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -910,7 +909,6 @@ public class customers extends javax.swing.JPanel {
 
         btnClearCurrencySelection.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClearCurrencySelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearCurrencySelection.setText("إزالة تحديد");
         btnClearCurrencySelection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearCurrencySelectionActionPerformed(evt);
@@ -1128,7 +1126,6 @@ public class customers extends javax.swing.JPanel {
 
         btnClearIncomingDocumentTextFields.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClearIncomingDocumentTextFields.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearIncomingDocumentTextFields.setText("إزالة تحديد");
         btnClearIncomingDocumentTextFields.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearIncomingDocumentTextFieldsActionPerformed(evt);
@@ -1237,7 +1234,7 @@ public class customers extends javax.swing.JPanel {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1286,7 +1283,6 @@ public class customers extends javax.swing.JPanel {
 
         btnClearOutgoingDocumentTextFields.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClearOutgoingDocumentTextFields.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearOutgoingDocumentTextFields.setText("إزالة تحديد");
         btnClearOutgoingDocumentTextFields.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearOutgoingDocumentTextFieldsActionPerformed(evt);
@@ -1539,7 +1535,7 @@ public class customers extends javax.swing.JPanel {
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel20Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

@@ -607,7 +607,6 @@ public class products extends javax.swing.JPanel {
 
         btnClear.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClear.setText("إزالة تحديد");
         btnClear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearActionPerformed(evt);

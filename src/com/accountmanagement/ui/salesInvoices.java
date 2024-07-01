@@ -484,7 +484,6 @@ public class salesInvoices extends javax.swing.JPanel {
 
         btnClearCutomerSelection.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         btnClearCutomerSelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/accountmanagement/ui/images/clear.png"))); // NOI18N
-        btnClearCutomerSelection.setText("إزالة تحديد");
         btnClearCutomerSelection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearCutomerSelectionActionPerformed(evt);
