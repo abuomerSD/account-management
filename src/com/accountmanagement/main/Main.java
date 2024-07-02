@@ -40,7 +40,7 @@ public class Main {
     
     private static boolean isActivated() {
         
-        boolean activated = false;
+        boolean activated = true;
         
         try {
             AccountMovementSqliteRepository repo = new AccountMovementSqliteRepository();
